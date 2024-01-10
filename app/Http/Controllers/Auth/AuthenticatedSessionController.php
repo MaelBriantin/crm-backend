@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Traits\ApiResponseTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthenticatedSessionController extends Controller
 {
+    use ApiResponseTrait;
     /**
      * Handle an incoming authentication request.
      */
@@ -20,13 +22,13 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return response()->json(\auth()->user());
+        return $this->successResponse(\auth()->user());
     }
 
     /**
      * Destroy an authenticated session.
      */
-    public function destroy(Request $request): Response
+    public function destroy(Request $request): JsonResponse
     {
         Auth::guard('web')->logout();
 
@@ -34,7 +36,7 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return response()->noContent();
+        return $this->emptyResponse();
     }
 
     /**
@@ -42,10 +44,8 @@ class AuthenticatedSessionController extends Controller
      */
     public function checkAuth(Request $request): JsonResponse
     {
-        if(auth()->user()) {
-            return response()->json($request->user());
-        } else {
-            return response()->json('Not authenticated');
-        }
+        return auth()->user()
+            ? $this->successResponse($request->user())
+            : $this->emptyResponse();
     }
 }
