@@ -22,10 +22,12 @@ class DatabaseSeeder extends Seeder
             'siren' => '9999999999',
             'address' => 'Somewhere over the Rainbow',
             'postcode' => '99000',
-            'city' => 'Saint Paradise',
+            'city' => 'Saint-Paradise',
             'phone_number' => '06.06.66.66.60',
             'email' => 'test@example.com',
             'password' => bcrypt('azerty'),
         ]);
+
+        $this->call(PostcodeSeeder::class);
     }
 }
