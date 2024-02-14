@@ -19,6 +19,7 @@ class PostcodeFactory extends Factory
     {
         return [
             'postcode' => str_replace(' ', '', $this->faker->unique()->numberBetween(10000, 99999)),
+            'city' => $this->faker->city,
         ];
     }
 

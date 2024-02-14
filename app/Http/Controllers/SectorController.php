@@ -5,12 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Sector;
 use App\Traits\ApiResponseTrait;
 use App\Services\PostcodeService;
+use App\Models\Postcode;
 use Illuminate\Http\Request;
 
 class SectorController extends Controller
 {
     use ApiResponseTrait;
-
     protected $postcodeService;
 
     public function __construct(PostcodeService $postcodeService)
@@ -21,8 +21,8 @@ class SectorController extends Controller
     public function index($withPostcodes = false)
     {
         return $withPostcodes
-        ? $this->successResponse(Sector::withCount('postcodes')->with('postcodes')->get())
-        : $this->successResponse(Sector::withCount('postcodes')->get());
+            ? $this->successResponse(Sector::withCount('postcodes')->with('postcodes')->get())
+            : $this->successResponse(Sector::withCount('postcodes')->get());
     }
 
     public function indexWithPostcodes()
@@ -56,7 +56,7 @@ class SectorController extends Controller
     {
         $validatedData = $request->validate([
             'name' => "required|string|max:255|unique:sectors,name",
-            'postcode' => "array"
+            'postcodes' => "array"
         ]);
 
         $sector = Sector::create([
@@ -65,8 +65,8 @@ class SectorController extends Controller
         ]);
 
         if ($request->has('postcodes')) {
-            foreach ($request->input('postcodes', []) as $postcode) {
-                $this->postcodeService->createPostcodes($postcode, $sector->id);
+            foreach ($request['postcodes'] as $postcode) {
+                $this->postcodeService->createPostcodes($postcode['postcode'], $postcode['city'], $sector->id);
             }
         }
 
@@ -83,7 +83,9 @@ class SectorController extends Controller
 
         if ($request->has('postcodes')) {
             foreach ($request->input('postcodes', []) as $postcode) {
-                $this->postcodeService->createPostcodes($postcode, $sector->id);
+                $postcodeValue = $postcode['postcode'];
+                $postcodeCity = $postcode['city'];
+                $this->postcodeService->createPostcodes($postcodeValue, $postcodeCity, $sector->id);
             }
         }
 

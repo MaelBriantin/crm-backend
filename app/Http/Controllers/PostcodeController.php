@@ -38,10 +38,11 @@ class PostcodeController extends Controller
     {
         $validatedData = $request->validate([
             'postcode' => 'required|string|max:5|unique:postcodes,postcode',
+            'city' => 'required|string|max:255',
             'sector_id' => 'required|int',
         ]);
 
-        $this->postcodeService->createPostcodes($validatedData['postcode'], $validatedData['sector_id']);
+        $this->postcodeService->createPostcodes($validatedData['postcode'], $validatedData['city'], $validatedData['sector_id']);
 
         return $this->successResponse(Postcode::all());
     }
@@ -50,6 +51,7 @@ class PostcodeController extends Controller
     {
         $validatedData = $request->validate([
             'postcode' => "required|string|max:5|unique:postcodes,postcode,$postcode->id",
+            'city' => 'required|string|max:255',
             'sector_id' => "required|int"
         ]);
 
