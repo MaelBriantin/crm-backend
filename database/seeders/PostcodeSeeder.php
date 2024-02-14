@@ -14,7 +14,7 @@ class PostcodeSeeder extends Seeder
      */
     public function run(): void
     {
-        $sectors = Sector::factory()->count(5)->create();
+        $sectors = Sector::factory()->count(10)->create();
 
         foreach ($sectors as $sector) {
             Postcode::factory()->sameSector($sector->id)->count(10)->create();
