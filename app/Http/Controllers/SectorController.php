@@ -26,7 +26,11 @@ class SectorController extends Controller
     public function index($withPostcodes = false)
     {
         return $withPostcodes
-            ? $this->successResponse(Sector::withCount('postcodes')->with('postcodes')->get())
+            ? $this->successResponse(Sector::withCount('postcodes')
+                                    ->with('postcodes')
+                                    ->get()
+                                    ->each
+                                    ->append('postcodes_list'))
             : $this->successResponse(Sector::withCount('postcodes')->get());
     }
 
