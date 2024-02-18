@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 class Sector extends Model
 {
@@ -21,6 +22,8 @@ class Sector extends Model
         'updated_at'
     ];
 
+    // protected $appends = ['postcodes_list'];
+
     // protected $withCount = ['postcodes'];
     // protected $with = ['postcodes'];
 
@@ -33,4 +36,20 @@ class Sector extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function getPostcodesListAttribute()
+    {
+        return $this->postcodes->map(function ($postcode) {
+            return "$postcode->postcode - $postcode->city";
+        })->toArray();
+    }
+
+    // protected static function boot()
+    // {
+    //     parent::boot();
+
+    //     static::addGlobalScope('order', function (Builder $builder) {
+    //         $builder->orderBy('name', 'asc');
+    //     });
+    // }
 }

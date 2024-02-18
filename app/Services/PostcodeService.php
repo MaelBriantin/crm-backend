@@ -3,10 +3,13 @@
 namespace App\Services;
 
 use App\Models\Postcode;
+use App\Traits\ApiResponseTrait;
 
 class PostcodeService
 {
-    public function createPostcodes($postcodeValue, $sectorId)
+    use ApiResponseTrait;
+
+    public function createPostcodes($postcodeValue, $city, $sectorId)
     {
         if ($postcodeValue[3] === '*') {
             $prefix = substr($postcodeValue, 0, 3);
@@ -15,16 +18,18 @@ class PostcodeService
             foreach ($suffixes as $suffix) {
                 $newPostcode = $prefix . $suffix;
 
-                Postcode::updateOrCreate(
-                    ['postcode' => $newPostcode],
-                    ['sector_id' => $sectorId]
-                );
+                Postcode::updateOrCreate([
+                    'postcode' => $newPostcode,
+                    'city' => $city,
+                    'sector_id' => $sectorId
+                ]);
             }
         } else {
-            Postcode::updateOrCreate(
-                ['postcode' => $postcodeValue],
-                ['sector_id' => $sectorId]
-            );
+            Postcode::updateOrCreate([
+                'postcode' => $postcodeValue,
+                'city' => $city,
+                'sector_id' => $sectorId
+            ]);
         }
     }
 

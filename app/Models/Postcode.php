@@ -11,14 +11,17 @@ class Postcode extends Model
 
     protected $fillable = [
         'postcode',
+        'city',
         'sector_id',
         'created_at',
         'updated_at',
+        'user_id',
     ];
     
     protected $hidden = [
         'created_at',
-        'updated_at'
+        'updated_at',
+        'user_id',
     ];
 
     public function sector() {

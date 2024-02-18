@@ -5,24 +5,33 @@ namespace App\Http\Controllers;
 use App\Models\Sector;
 use App\Traits\ApiResponseTrait;
 use App\Services\PostcodeService;
+use App\Services\SectorService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Database\QueryException;
+use App\Exceptions\SectorCreationException;
 
 class SectorController extends Controller
 {
     use ApiResponseTrait;
-
     protected $postcodeService;
+    protected $sectorService;
 
-    public function __construct(PostcodeService $postcodeService)
+    public function __construct(PostcodeService $postcodeService, SectorService $sectorService)
     {
         $this->postcodeService = $postcodeService;
+        $this->sectorService = $sectorService;
     }
 
     public function index($withPostcodes = false)
     {
         return $withPostcodes
-        ? $this->successResponse(Sector::withCount('postcodes')->with('postcodes')->get())
-        : $this->successResponse(Sector::withCount('postcodes')->get());
+            ? $this->successResponse(Sector::withCount('postcodes')
+                                    ->with('postcodes')
+                                    ->get()
+                                    ->each
+                                    ->append('postcodes_list'))
+            : $this->successResponse(Sector::withCount('postcodes')->get());
     }
 
     public function indexWithPostcodes()
@@ -56,40 +65,30 @@ class SectorController extends Controller
     {
         $validatedData = $request->validate([
             'name' => "required|string|max:255|unique:sectors,name",
-            'postcode' => "array"
+            'postcodes' => "array"
+        ], 
+        [ 
+            'name.unique' => trans('sectors.name_unique')
         ]);
 
-        $sector = Sector::create([
-            'name' => $validatedData['name'],
-            'user_id' => auth()->user()->id
-        ]);
+        $sector = $this->sectorService->createSector($validatedData);
 
-        if ($request->has('postcodes')) {
-            foreach ($request->input('postcodes', []) as $postcode) {
-                $this->postcodeService->createPostcodes($postcode, $sector->id);
-            }
-        }
-
-        return $this->successResponse(Sector::withCount('postcodes')->get());
+        return $this->successResponse($sector);
     }
 
     public function update(Request $request, Sector $sector)
     {
         $validatedData = $request->validate([
-            // name must be unique, except for the actual sector name
-            'name' => "required|string|max:255|unique:sectors,name,$sector->id",
-            'postcode' => "array"
+            'name' => "required|string|max:255|unique:sectors,name,$request->id",
+            'postcodes' => "array"
+        ], 
+        [ 
+            'name.unique' => trans('sectors.name_unique', ['name' => $request->name])
         ]);
 
-        if ($request->has('postcodes')) {
-            foreach ($request->input('postcodes', []) as $postcode) {
-                $this->postcodeService->createPostcodes($postcode, $sector->id);
-            }
-        }
+        $sector = $this->sectorService->updateSector($validatedData, $sector);
 
-        $sector->update($validatedData);
-
-        return $this->successResponse(Sector::all());
+        return $this->successResponse($sector);
     }
 
     public function destroy(Sector $sector)

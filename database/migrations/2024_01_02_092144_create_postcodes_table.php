@@ -13,10 +13,12 @@ return new class extends Migration
     {
         Schema::create('postcodes', function (Blueprint $table) {
             $table->id();
-            $table->string('postcode', 5)->unique();
+            $table->string('postcode', 5);
+            $table->string('city');
             $table->unsignedBigInteger('sector_id');
             $table->timestamps();
 
+            $table->unique(['postcode', 'city']);
             $table->foreign('sector_id')->references('id')->on('sectors')->cascadeOnDelete()->cascadeOnUpdate();
         });
     }

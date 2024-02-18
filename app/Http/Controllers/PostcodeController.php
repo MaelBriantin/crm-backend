@@ -7,6 +7,7 @@ use App\Traits\ApiResponseTrait;
 use App\Services\PostcodeService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class PostcodeController extends Controller
 {
@@ -36,21 +37,41 @@ class PostcodeController extends Controller
 
     public function store(Request $request)
     {
+        // Check if the request is valid and the postcode + city combination is unique
         $validatedData = $request->validate([
-            'postcode' => 'required|string|max:5|unique:postcodes,postcode',
+            'postcode' => [
+                'required',
+                'string',
+                'max:5',
+                Rule::unique('postcodes')->where(function ($query) use ($request) {
+                    return $query->where('postcode', $request->postcode)
+                                 ->where('city', $request->city);
+                }),
+            ],
+            'city' => 'required|string|max:255',
             'sector_id' => 'required|int',
         ]);
 
-        $this->postcodeService->createPostcodes($validatedData['postcode'], $validatedData['sector_id']);
+        $this->postcodeService->createPostcodes($validatedData['postcode'], $validatedData['city'], $validatedData['sector_id']);
 
         return $this->successResponse(Postcode::all());
     }
 
     public function update(Request $request, Postcode $postcode)
     {
+        // Check if the request is valid and the postcode + city combination is unique except for the current postcode
         $validatedData = $request->validate([
-            'postcode' => "required|string|max:5|unique:postcodes,postcode,$postcode->id",
-            'sector_id' => "required|int"
+            'postcode' => [
+                'required',
+                'string',
+                'max:5',
+                Rule::unique('postcodes')->ignore($postcode->id)->where(function ($query) use ($request) {
+                    return $query->where('postcode', $request->postcode)
+                                 ->where('city', $request->city);
+                }),
+            ],
+            'city' => 'required|string|max:255',
+            'sector_id' => 'required|int',
         ]);
 
         $postcode->update($validatedData);
