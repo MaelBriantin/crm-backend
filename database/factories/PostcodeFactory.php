@@ -33,7 +33,7 @@ class PostcodeFactory extends Factory
         return $this->state([
             'sector_id' => $sectorId,
         ])->afterCreating(function (Postcode $postcode) {
-            $postcode->update(['postcode' => str_replace(' ', '', $this->faker->unique()->numberBetween(10000, 99999))]);
+            $postcode->update(['postcode' => str_replace(' ', '', $this->faker->numberBetween(10000, 99999))]);
         });
     }
 }
