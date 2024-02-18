@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\PostcodeController;
 use App\Http\Controllers\SectorController;
+use App\Http\Controllers\BrandController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -36,6 +37,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/postcodes/{postcode}', [PostcodeController::class, 'show']);
     Route::post('/postcodes', [PostcodeController::class, 'store']);
     Route::get('/postcodes', [PostcodeController::class, 'index']);
+
+    // Brands routes
+    Route::delete('/brands/{brand}', [BrandController::class, 'destroy']);
+    Route::put('/brands/{brand}', [BrandController::class, 'update']);
+    Route::get('/brands/{brand}', [BrandController::class, 'show']);
+    Route::post('/brands', [BrandController::class, 'store']);
+    Route::get('/brands', [BrandController::class, 'index']);
 });
 
 // Test without sanctum middleware (too many authentication issues with Postman or Bruno...)
