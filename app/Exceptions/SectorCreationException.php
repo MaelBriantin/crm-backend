@@ -20,7 +20,14 @@ class SectorCreationException extends Exception
                 $postcode = $matches[1] ?? null;
                 $message = trans('postcodes.postcode_unique', ['postcode' => $postcode]);
                 $this->postcode = $postcode;
-            } else {
+            } 
+            else if (str_contains($e->getMessage(), 'postcodes.postcodes_postcode_city_unique')){
+                preg_match("/'(\d+-[^']+)'/", $e->getMessage(), $matches);
+                $postcode_city = $matches[1] ?? null;
+                $message = trans('postcodes.postcode_city_unique', ['postcode_city' => $postcode_city]);
+                $this->postcode = $postcode_city;
+            }
+            else {
                 $message = trans('sectors.creation_error');
             }
         } else {
