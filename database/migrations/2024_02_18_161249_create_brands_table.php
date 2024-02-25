@@ -16,10 +16,10 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->string('name');
             $table->string('sku_code')->unique();
-            $table->string('description')->nullable();
-            $table->string('contact_name');
-            $table->string('contact_email');
-            $table->string('contact_phone');
+            $table->string('notes')->nullable();
+            $table->string('contact_name')->nullable();
+            $table->string('contact_email')->nullable();
+            $table->string('contact_phone')->nullable();
             $table->string('address');
             $table->string('city');
             $table->string('postcode', 5);

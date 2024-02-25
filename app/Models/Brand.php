@@ -14,7 +14,7 @@ class Brand extends Model
         'name',
         'user_id',
         'sku_code',
-        'description',
+        'notes',
         'contact_name',
         'contact_email',
         'contact_phone',

@@ -20,7 +20,7 @@ class BrandFactory extends Factory
             'name' => $this->faker->company,
             'user_id' => '1',
             'sku_code' => $this->faker->unique()->regexify('[A-Z]{3}-[0-9]{3}'),
-            'description' => $this->faker->sentence,
+            'notes' => $this->faker->sentence(),
             'contact_name' => $this->faker->name,
             'contact_email' => $this->faker->unique()->safeEmail,
             'contact_phone' => $this->faker->phoneNumber,
