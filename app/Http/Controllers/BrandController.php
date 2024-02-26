@@ -25,18 +25,20 @@ class BrandController extends Controller
     {
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
-            'user_id' => 'required|int',
             'sku_code' => 'required|string|max:255',
-            'notes' => 'string|max:255',
-            'contact_name' => 'string|max:255',
-            'contact_email' => 'string|max:255',
-            'contact_phone' => 'string|max:255',
+            'notes' => 'nullable|string|max:255',
+            'contact_name' => 'nullable|string|max:255',
+            'contact_email' => 'nullable|string|max:255',
+            'contact_phone' => 'nullable|string|max:255',
             'address' => 'required|string|max:255',
             'city' => 'required|string|max:255',
             'postcode' => 'required|string|max:255',
         ]);
 
+        $validatedData['user_id'] = auth()->id();
+
         $brand = Brand::create($validatedData);
+       
 
         return $this->successResponse($brand, 'Brand created successfully', 201);
     }
@@ -45,15 +47,14 @@ class BrandController extends Controller
     {
         $validatedData = $request->validate([
             'name' => 'string|max:255',
-            'user_id' => 'int',
             'sku_code' => 'string|max:255',
-            'notes' => 'string|max:255',
-            'contact_name' => 'string|max:255',
-            'contact_email' => 'string|max:255',
-            'contact_phone' => 'string|max:255',
-            'address' => 'string|max:255',
-            'city' => 'string|max:255',
-            'postcode' => 'string|max:255',
+            'notes' => 'nullable|string|max:255',
+            'contact_name' => 'nullable|string|max:255',
+            'contact_email' => 'nullable|string|max:255',
+            'contact_phone' => 'nullable|string|max:255',
+            'address' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
+            'postcode' => 'required|string|max:5',
         ]);
 
         $brand->update($validatedData);
