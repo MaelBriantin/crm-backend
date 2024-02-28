@@ -5,11 +5,21 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Brand;
 use App\Traits\ApiResponseTrait;
+use App\Exceptions\BrandCreationException;
+use Illuminate\Database\QueryException;
+use App\Services\BrandService;
 
 
 class BrandController extends Controller
 {
     use ApiResponseTrait;
+
+    protected $brandService;
+
+    public function __construct(BrandService $brandService)
+    {
+        $this->brandService = $brandService;
+    }
 
     public function index()
     {
@@ -25,7 +35,6 @@ class BrandController extends Controller
     {
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
-            'sku_code' => 'required|string|max:255',
             'notes' => 'nullable|string|max:255',
             'contact_name' => 'nullable|string|max:255',
             'contact_email' => 'nullable|string|max:255',
@@ -35,12 +44,12 @@ class BrandController extends Controller
             'postcode' => 'required|string|max:255',
         ]);
 
-        $validatedData['user_id'] = auth()->id();
-
-        $brand = Brand::create($validatedData);
-       
-
-        return $this->successResponse($brand, 'Brand created successfully', 201);
+        try {
+            $brand = $this->brandService->createBrand($validatedData);
+            return $this->successResponse($brand);
+        } catch (QueryException $e) {
+            throw new BrandCreationException($e);
+        }
     }
 
     public function update(Request $request, Brand $brand)
@@ -58,14 +67,12 @@ class BrandController extends Controller
         ]);
 
         $brand->update($validatedData);
-
-        return $this->successResponse($brand, 'Brand updated successfully');
+        return $this->successResponse($brand);
     }
 
     public function destroy(Brand $brand)
     {
         $brand->delete();
-
-        return $this->successResponse($brand, 'Brand deleted successfully');
+        return $this->successResponse($brand);
     }
 }
