@@ -29,5 +29,6 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call(PostcodeSeeder::class);
+        $this->call(BrandSeeder::class);
     }
 }

@@ -47,4 +47,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Sector::class);
     }
+
+    public function brands()
+    {
+        return $this->hasMany(Brand::class);
+    }
 }

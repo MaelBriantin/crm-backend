@@ -7,9 +7,6 @@ use App\Traits\ApiResponseTrait;
 use App\Services\PostcodeService;
 use App\Services\SectorService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Database\QueryException;
-use App\Exceptions\SectorCreationException;
 
 class SectorController extends Controller
 {
