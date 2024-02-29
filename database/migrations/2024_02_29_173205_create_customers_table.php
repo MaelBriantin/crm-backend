@@ -16,12 +16,12 @@ return new class extends Migration
             $table->string('firstname');
             $table->string('lastname');
             $table->string('email')->nullable();
-            $table->string('phone')->nullable();
+            $table->string('phone', 25)->nullable();
             $table->string('address');
             $table->string('city');
             $table->string('postcode', 5);
             $table->string('notes')->nullable();
-            $table->unsignedBigInteger('sector_id');
+            $table->unsignedBigInteger('sector_id')->nullable();
             $table->unsignedBigInteger('user_id');
             $table->timestamps();
 
