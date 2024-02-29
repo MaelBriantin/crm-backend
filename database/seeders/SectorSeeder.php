@@ -5,10 +5,9 @@ namespace Database\Seeders;
 use App\Models\Sector;
 use App\Models\Postcode;
 use App\Models\Customer;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class PostcodeSeeder extends Seeder
+class SectorSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -20,5 +19,9 @@ class PostcodeSeeder extends Seeder
         foreach ($sectors as $sector) {
             Postcode::factory()->sameSector($sector->id)->count(25)->create();
         } 
+
+        foreach ($sectors as $sector) {
+            Customer::factory()->sameSector($sector->id)->count(rand(5, 50))->create();
+        }
     }
 }
