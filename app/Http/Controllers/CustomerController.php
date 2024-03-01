@@ -13,7 +13,7 @@ class CustomerController extends Controller
 
     public function index(): \Illuminate\Http\JsonResponse
     {
-        return $this->successResponse(Customer::all());
+        return $this->successResponse(Customer::all()->each->append(['full_name', 'full_address', 'sector_name'])->load('sector'));
     }
 
     public function show(Customer $customer): \Illuminate\Http\JsonResponse

@@ -40,7 +40,15 @@ class Customer extends Model
     
     public function getFullAddressAttribute()
     {
-        return "$this->address, $this->postcode $this->city";
+        return "$this->address - $this->postcode $this->city";
+    }
+
+    public function getSectorNameAttribute()
+    {
+        if(!$this->sector) {
+            return 'Hors secteur';
+        }
+        return $this->sector->name;
     }
     
     protected static function booted()
