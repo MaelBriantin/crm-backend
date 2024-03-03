@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Traits\ApiResponseTrait;
 use App\Models\Customer;
+use App\Services\CustomerService;
 use Illuminate\Http\Request;
 
 class CustomerController extends Controller
@@ -11,9 +12,22 @@ class CustomerController extends Controller
     
     use ApiResponseTrait;
 
+    protected $customerService;
+
+    public function __construct(CustomerService $customerService)
+    {
+        $this->customerService = $customerService;
+    }
+
     public function index(): \Illuminate\Http\JsonResponse
     {
-        return $this->successResponse(Customer::all()->each->append(['full_name', 'full_address', 'sector_name'])->load('sector'));
+        return $this->successResponse(
+            Customer::orderBy('is_active', 'desc')
+                ->get()
+                ->each
+                ->append(['full_name', 'full_address', 'sector_name'])
+                ->load('sector')
+        );
     }
 
     public function show(Customer $customer): \Illuminate\Http\JsonResponse
@@ -21,45 +35,18 @@ class CustomerController extends Controller
         return $this->successResponse($customer);
     }	
 
-    public function store(Request $request): \Illuminate\Http\JsonResponse
+    public function store(Request $request)
     {
-        $validatedData = $request->validate([
-            'first_name' => 'required|string|max:45',
-            'last_name' => 'required|string|max:45',
-            'email' => 'required|email|max:255',
-            'phone' => 'required|string|max:25',
-            'address' => 'required|string|max:255',
-            'postcode' => 'required|string|max:5',
-            'city' => 'required|string|max:255',
-            'notes' => 'string|max:255',
-            'sector_id' => 'int',
-        ]);
+        $customer = $this->customerService->createCustomer($request);
 
-        $validatedData['user_id'] = auth()->user()->id;
-
-        $customer = Customer::create($validatedData);
-
-        return $this->successResponse($customer);
+        return $this->successResponse($customer ?? []);
     }
 
     public function update(Request $request, Customer $customer): \Illuminate\Http\JsonResponse
     {
-        $validatedData = $request->validate([
-            'first_name' => 'string|max:45',
-            'last_name' => 'string|max:45',
-            'email' => 'email|max:255',
-            'phone' => 'string|max:25',
-            'address' => 'string|max:255',
-            'postcode' => 'string|max:5',
-            'city' => 'string|max:255',
-            'notes' => 'string|max:255',
-            'sector_id' => 'int',
-            'user_id' => 'int'
-        ]);
+        $newCustomer = $this->customerService->updateCustomer($request, $customer);
 
-        $customer->update($validatedData);
-
-        return $this->successResponse($customer);
+        return $this->successResponse($newCustomer ?? []);
     }
 
     public function destroy(Customer $customer): \Illuminate\Http\JsonResponse
