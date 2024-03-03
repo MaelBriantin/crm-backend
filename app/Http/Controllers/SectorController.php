@@ -25,10 +25,11 @@ class SectorController extends Controller
         return $withPostcodes
             ? $this->successResponse(Sector::withCount('postcodes')
                                     ->with('postcodes')
+                                    ->withCount('customers')
                                     ->get()
                                     ->each
                                     ->append('postcodes_list'))
-            : $this->successResponse(Sector::withCount('postcodes')->get());
+            : $this->successResponse(Sector::withCount(['postcodes', 'customers'])->get());
     }
 
     public function indexWithPostcodes()

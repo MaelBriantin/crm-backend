@@ -1,10 +1,11 @@
 <?php
 
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\PostcodeController;
 use App\Http\Controllers\SectorController;
 use App\Http\Controllers\BrandController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,6 +45,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/brands/{brand}', [BrandController::class, 'show']);
     Route::post('/brands', [BrandController::class, 'store']);
     Route::get('/brands', [BrandController::class, 'index']);
+
+    // Customers routes
+    Route::delete('/customers/{customer}', [CustomerController::class, 'destroy']);
+    Route::patch('/customers/{customer}', [CustomerController::class, 'update']);
+    Route::get('/customers/{customer}', [CustomerController::class, 'show']);
+    Route::post('/customers', [CustomerController::class, 'store']);
+    Route::get('/customers', [CustomerController::class, 'index']);
 });
 
 // Test without sanctum middleware (too many authentication issues with Postman or Bruno...)

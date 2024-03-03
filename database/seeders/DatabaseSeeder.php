@@ -28,7 +28,7 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('azerty'),
         ]);
 
-        $this->call(PostcodeSeeder::class);
+        $this->call(SectorSeeder::class);
         $this->call(BrandSeeder::class);
     }
 }

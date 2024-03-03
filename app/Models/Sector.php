@@ -43,6 +43,11 @@ class Sector extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function customers()
+    {
+        return $this->hasMany(Customer::class);
+    }
+
     public function getPostcodesListAttribute()
     {
         return $this->postcodes->map(function ($postcode) {
