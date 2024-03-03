@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('city');
             $table->string('postcode', 5);
             $table->string('notes')->nullable();
+            $table->boolean('is_active')->default(true);
             $table->unsignedBigInteger('sector_id')->nullable();
             $table->unsignedBigInteger('user_id');
             $table->timestamps();

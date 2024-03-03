@@ -19,13 +19,24 @@ class Customer extends Model
         'city',
         'postcode',
         'notes',
+        'is_active',
         'sector_id',
         'user_id',
+    ];
+
+    protected $cast = [
+        'is_active' => 'boolean',
     ];
 
     public function sector()
     {
         return $this->belongsTo(Sector::class);
+    }
+
+    public function getIsActiveAttribute($value)
+    {
+        return boolval($value);
+        // return $value ? 'Actif' : 'Inactif';
     }
 
     public function user()
@@ -37,7 +48,7 @@ class Customer extends Model
     {
         return "$this->firstname $this->lastname";
     }
-    
+
     public function getFullAddressAttribute()
     {
         return "$this->address - $this->postcode $this->city";
@@ -45,12 +56,12 @@ class Customer extends Model
 
     public function getSectorNameAttribute()
     {
-        if(!$this->sector) {
+        if (!$this->sector) {
             return 'Hors secteur';
         }
         return $this->sector->name;
     }
-    
+
     protected static function booted()
     {
         static::addGlobalScope(new UserScope);
