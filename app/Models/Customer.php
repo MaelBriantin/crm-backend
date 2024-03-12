@@ -24,9 +24,12 @@ class Customer extends Model
         'user_id',
     ];
 
-    protected $cast = [
-        'is_active' => 'boolean',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'is_active' => 'boolean',
+        ];
+    }
 
     public function sector()
     {
