@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreCustomerRequest;
+use App\Http\Requests\UpdateCustomerRequest;
+use App\Http\Resources\CustomerResource;
 use App\Traits\ApiResponseTrait;
 use App\Models\Customer;
 use App\Services\CustomerService;
@@ -21,13 +24,14 @@ class CustomerController extends Controller
 
     public function index(): \Illuminate\Http\JsonResponse
     {
-        return $this->successResponse(
-            Customer::orderBy('is_active', 'desc')
-                ->get()
-                ->each
-                ->append(['full_name', 'full_address', 'sector_name'])
-                ->load('sector')
-        );
+        // return $this->successResponse(
+        //     Customer::orderBy('is_active', 'desc')
+        //         ->get()
+        //         ->each
+        //         ->append(['full_name', 'full_address', 'sector_name'])
+        //         ->load('sector')
+        // );
+        return $this->successResponse(CustomerResource::collection(Customer::all()));
     }
 
     public function show(Customer $customer): \Illuminate\Http\JsonResponse
@@ -35,16 +39,16 @@ class CustomerController extends Controller
         return $this->successResponse($customer);
     }	
 
-    public function store(Request $request)
+    public function store(StoreCustomerRequest $customerRequest)
     {
-        $customer = $this->customerService->createCustomer($request);
+        $customer = $this->customerService->createCustomer($customerRequest);
 
         return $this->successResponse($customer ?? []);
     }
 
-    public function update(Request $request, Customer $customer): \Illuminate\Http\JsonResponse
+    public function update(UpdateCustomerRequest $customerRequest, Customer $customer): \Illuminate\Http\JsonResponse
     {
-        $newCustomer = $this->customerService->updateCustomer($request, $customer);
+        $newCustomer = $this->customerService->updateCustomer($customerRequest, $customer);
 
         return $this->successResponse($newCustomer ?? []);
     }
