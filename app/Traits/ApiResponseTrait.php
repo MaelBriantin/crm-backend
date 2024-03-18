@@ -20,6 +20,10 @@ trait ApiResponseTrait
         if ($data instanceof Collection) {
             $data = $data->toArray();
         }
+
+        if ($data instanceof \Illuminate\Http\Resources\Json\ResourceCollection) {
+            $data = $data->resolve();
+        }
     
         if (is_array($data)) {
             return response()->json($data, 200);
