@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 use App\Scopes\UserScope;
 
 class Customer extends Model
@@ -19,6 +20,10 @@ class Customer extends Model
         'city',
         'postcode',
         'notes',
+        'relationship_id',
+        'visit_frequency_id',
+        'visit_schedule',
+        'visit_day',
         'is_active',
         'sector_id',
         'user_id',
@@ -39,7 +44,6 @@ class Customer extends Model
     public function getIsActiveAttribute($value)
     {
         return boolval($value);
-        // return $value ? 'Actif' : 'Inactif';
     }
 
     public function user()
@@ -60,9 +64,19 @@ class Customer extends Model
     public function getSectorNameAttribute()
     {
         if (!$this->sector) {
-            return 'Hors secteur';
+            return trans('sectors.out_of_sector');
         }
         return $this->sector->name;
+    }
+
+    public function relationship()
+    {
+        return $this->belongsTo(Relationship::class);
+    }
+
+    public function visitFrequency()
+    {
+        return $this->belongsTo(VisitFrequency::class);
     }
 
     protected static function booted()

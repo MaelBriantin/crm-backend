@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\VisitFrequencyController;
+use App\Http\Controllers\RelationshipController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\PostcodeController;
 use App\Http\Controllers\SectorController;
@@ -52,6 +54,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/customers/{customer}', [CustomerController::class, 'show']);
     Route::post('/customers', [CustomerController::class, 'store']);
     Route::get('/customers', [CustomerController::class, 'index']);
+
+    // Relationships routes
+    Route::get('/relationships/{relationship}', [RelationshipController::class, 'show']);
+    Route::get('/relationships', [RelationshipController::class, 'index']);
+
+    // VisitFrequency routes
+    Route::get('/visitFrequencies/{visitFrequency}', [VisitFrequencyController::class, 'show']);
+    Route::get('/visitFrequencies', [VisitFrequencyController::class, 'index']);
 });
 
 // Test without sanctum middleware (too many authentication issues with Postman or Bruno...)

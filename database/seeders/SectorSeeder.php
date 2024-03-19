@@ -21,7 +21,7 @@ class SectorSeeder extends Seeder
         } 
 
         foreach ($sectors as $sector) {
-            Customer::factory()->sameSector($sector->id)->count(rand(5, 50))->create();
+            Customer::factory()->sameSector($sector->id)->count(1)->create();
         }
     }
 }
