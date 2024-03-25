@@ -29,8 +29,10 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call(RelationshipSeeder::class);
-        $this->call(VisitFrequencySeeder::class); 
+        $this->call(VisitFrequencySeeder::class);
         $this->call(SectorSeeder::class);
         $this->call(BrandSeeder::class);
+        $this->call(MeasureUnitSeeder::class);
+        $this->call(VatRateSeeder::class);
     }
 }
