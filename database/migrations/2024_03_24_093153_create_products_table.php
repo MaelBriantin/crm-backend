@@ -19,10 +19,10 @@ return new class extends Migration
             $table->unsignedBigInteger('brand_id');
             $table->decimal('purchase_price')->nullable();
             $table->decimal('sale_price')->nullable();
-            $table->unsignedBigInteger('vat_rate_id')->default(1);
-            $table->string('product_type')->default('default');
-            $table->integer('measure_quantity')->nullable();
-            $table->foreignId('measure_unit_id')->nullable();
+            $table->unsignedBigInteger('vat_rate')->default(\App\Enums\Product\VatRate::TWENTY);
+            $table->string('product_type')->default(\App\Enums\Product\ProductType::DEFAULT);
+            $table->integer('measurement_quantity')->nullable();
+            $table->foreignId('measurement_unit')->nullable();
             $table->unsignedBigInteger('stock')->default(0);
             $table->string('image')->nullable();
             $table->unsignedBigInteger('user_id');
@@ -30,8 +30,6 @@ return new class extends Migration
 
             $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
             $table->foreign('brand_id')->references('id')->on('brands')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreign('vat_rate_id')->references('id')->on('vat_rates')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreign('measure_unit_id')->references('id')->on('measure_units')->onUpdate('cascade')->onDelete('set null');
         });
     }
 
