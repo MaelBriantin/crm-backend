@@ -26,10 +26,10 @@ trait ApiResponseTrait
         }
     
         if (is_array($data)) {
-            return response()->json($data, 200);
+            return response()->json($data, 200, [], JSON_PRESERVE_ZERO_FRACTION);
         }
     
-        return response()->json([$data], 200);
+        return response()->json([$data], 200, [], JSON_PRESERVE_ZERO_FRACTION);
     }
 
     /**
