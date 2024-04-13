@@ -16,7 +16,8 @@ class Product extends Model
     protected $fillable = [
         'name',
         'description',
-        'price',
+        'purchase_price',
+        'selling_price',
         'vat_rate',
         'product_type',
         'measurement_quantity',
@@ -29,24 +30,20 @@ class Product extends Model
         'updated_at',
     ];
 
-    public function getVatRateAttribute($value): VatRate
-    {
-        return VatRate::from($value);
-    }
+    protected $casts = [
+        'purchase_price' => 'float',
+        'selling_price' => 'float',
+        'vat_rate' => 'float',
+        'is_active' => 'boolean',
+    ];
 
-    public function setVatRateAttribute(VatRate $value): void
-    {
-        $this->attributes['vat_rate'] = $value->value;
-    }
+    protected $appends = [
+        'selling_price_with_vat',
+    ];
 
-    public function getMeasurementUnitAttribute($value): MeasurementUnit
+    public function getSellingPriceWithVatAttribute()
     {
-        return MeasurementUnit::from($value);
-    }
-
-    public function setMeasurementUnitAttribute(MeasurementUnit $value): void
-    {
-        $this->attributes['measurement_unit'] = $value->value;
+        return $this->selling_price + ($this->selling_price * $this->vat_rate / 100);
     }
 
     public function productSizes()
