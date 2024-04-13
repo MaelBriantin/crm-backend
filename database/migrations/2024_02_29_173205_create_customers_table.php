@@ -32,7 +32,7 @@ return new class extends Migration
 
             $table->foreign('visit_frequency_id')->references('id')->on('visit_frequencies')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreign('relationship_id')->references('id')->on('relationships')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreign('sector_id')->references('id')->on('sectors')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreign('sector_id')->references('id')->on('sectors')->nullOnDelete()->cascadeOnUpdate();
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete()->cascadeOnUpdate();
 
             $table->index('is_active');

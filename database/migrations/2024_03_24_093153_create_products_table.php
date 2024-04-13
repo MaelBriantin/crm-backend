@@ -18,12 +18,14 @@ return new class extends Migration
             $table->string('reference')->nullable();
             $table->unsignedBigInteger('brand_id');
             $table->decimal('purchase_price')->nullable();
-            $table->decimal('sale_price')->nullable();
-            $table->unsignedBigInteger('vat_rate')->default(\App\Enums\Product\VatRate::TWENTY);
+            $table->decimal('selling_price')->nullable();
+            $table->decimal('selling_price_with_vat')->nullable();
+            $table->decimal('vat_rate')->default(\App\Enums\Product\VatRate::TWENTY);
             $table->string('product_type')->default(\App\Enums\Product\ProductType::DEFAULT);
             $table->integer('measurement_quantity')->nullable();
-            $table->foreignId('measurement_unit')->nullable();
+            $table->string('measurement_unit')->nullable();
             $table->unsignedBigInteger('stock')->default(0);
+            $table->unsignedBigInteger('alert_stock')->default(0);
             $table->string('image')->nullable();
             $table->unsignedBigInteger('user_id');
             $table->timestamps();
