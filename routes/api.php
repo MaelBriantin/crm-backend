@@ -66,6 +66,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // Product
     Route::get('/productOptions', [ProductController::class, 'productOptionsIndex']);
+    Route::get('/products', [ProductController::class, 'index']);
+    Route::post('/products', [ProductController::class, 'store']);
 });
 
 // Test without sanctum middleware (too many authentication issues with Postman or Bruno...)

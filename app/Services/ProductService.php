@@ -1,15 +1,23 @@
-<?php 
+<?php
 
 namespace App\Services;
 
 use App\Enums\Product\ProductType;
-use App\Http\Requests\StoreProductRequest;
+use App\Http\Requests\Product\StoreProductRequest;
 use App\Traits\ApiResponseTrait;
 use App\Models\Product;
+use App\Models\ProductSize;
 
 class ProductService
 {
     use ApiResponseTrait;
+
+    private $productSizeService;
+
+    public function __construct(ProductSizeService $productSizeService)
+    {
+        $this->productSizeService = $productSizeService;
+    }
 
     public function createProduct(StoreProductRequest $productRequest)
     {
@@ -17,15 +25,13 @@ class ProductService
             $data = $productRequest->validated();
             $data['user_id'] = auth()->user()->id;
 
-            if($productRequest->product_type === ProductType::CLOTHES) {
-                $data['measurement_unit'] = null;
+            $newProduct = Product::create($data);
+            
+            if ($newProduct['product_type'] === ProductType::CLOTHES) {
+                $this->productSizeService->createProductSize($newProduct, $productRequest);
             }
 
-            if($productRequest->product_type === ProductType::DEFAULT) {
-                $data['vat_rate'] = null;
-            }
-
-            return Product::create($data);
+            return $newProduct;
         } catch (\Exception $e) {
             return $this->errorResponse($e->getMessage(), 500);
         }
