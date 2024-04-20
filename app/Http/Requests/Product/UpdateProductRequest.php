@@ -1,8 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Product;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Enums\Product\MeasurementUnit;
+use App\Enums\Product\ProductType;
+use App\Enums\Product\VatRate;
 
 class UpdateProductRequest extends FormRequest
 {
@@ -22,18 +25,19 @@ class UpdateProductRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'string|max:255',
+            'id' => 'required|integer|exists:products,id',
+            'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:255',
-            'reference' => 'string|max:45',
-            'purchase_price' => 'numeric',
-            'selling_price' => 'numeric',
-            'brand' => 'array',
-            'product_type' => 'string',
-            'measurement_quantity' => 'integer',
-            'measurement_unit' => 'string',
-            'vat_rate' => 'numeric',
-            'stock' => 'integer',
-            'image' => 'string',
+            'reference' => 'required|string|max:45',
+            'purchase_price' => 'required|numeric',
+            'selling_price' => 'required|numeric',
+            'brand_id' => 'required|integer|exists:brands,id',
+            'product_type' => ['required', 'string', 'in:' . ProductType::request()],
+            'measurement_quantity' => 'nullable|integer',
+            'measurement_unit' => ['nullable', 'string', 'in:' . MeasurementUnit::request()],
+            'vat_rate' => ['numeric', 'in:' . VatRate::request()],
+            'stock' => 'nullable|integer',
+            'image' => 'nullable|string',
             'is_active' => 'boolean',
         ];
     }

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\Product\MeasurementUnit;
+use App\Enums\Product\ProductType;
 use App\Enums\Product\VatRate;
 use App\Scopes\UserScope;
 use Illuminate\Database\Eloquent\Builder;
@@ -16,6 +17,7 @@ class Product extends Model
     protected $fillable = [
         'name',
         'description',
+        'reference',
         'purchase_price',
         'selling_price',
         'vat_rate',
@@ -37,8 +39,13 @@ class Product extends Model
         'is_active' => 'boolean',
     ];
 
+    protected $with = [
+        'productSizes',
+    ];
+
     protected $appends = [
         'selling_price_with_vat',
+        'product_type_label',
     ];
 
     public function getSellingPriceWithVatAttribute()
@@ -46,12 +53,14 @@ class Product extends Model
         return $this->selling_price + ($this->selling_price * $this->vat_rate / 100);
     }
 
+    public function getProductTypeLabelAttribute()
+    {
+        return trans('products.product_types.' . $this->product_type);
+    }
+
     public function productSizes()
     {
-        if($this->product_type === 'clothes'){
-            return $this->hasMany(ProductSize::class);
-        }
-        return null;
+        return $this->hasMany(ProductSize::class);
     }
 
     public function user()

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Product;
 
 use Illuminate\Foundation\Http\FormRequest;
 use App\Enums\Product\MeasurementUnit;
@@ -30,12 +30,11 @@ class StoreProductRequest extends FormRequest
             'reference' => 'required|string|max:45',
             'purchase_price' => 'required|numeric',
             'selling_price' => 'required|numeric',
-            // 'brand_id' => 'required|integer|exists:brands,id',
-            'brand' => 'required|array',
+            'brand_id' => 'required|integer|exists:brands,id',
             'product_type' => ['required', 'string', 'in:' . ProductType::request()],
             'measurement_quantity' => 'nullable|integer',
             'measurement_unit' => ['nullable', 'string', 'in:' . MeasurementUnit::request()],
-            'vat_rate' => ['numeric', 'in:' . VatRate::request()],
+            'vat_rate' => ['string', 'in:' . VatRate::request()],
             'stock' => 'nullable|integer',
             'image' => 'nullable|string',
             'is_active' => 'boolean',
