@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Enums\Product\ProductType;
 use App\Http\Requests\Product\StoreProductRequest;
+use App\Http\Requests\Product\UpdateProductRequest;
 use App\Traits\ApiResponseTrait;
 use App\Models\Product;
 use App\Models\ProductSize;
@@ -37,7 +38,7 @@ class ProductService
         }
     }
 
-    public function updateProduct(StoreProductRequest $productRequest, Product $product)
+    public function updateProduct(UpdateProductRequest $productRequest, Product $product)
     {
         try {
             $data = $productRequest->validated();

@@ -6,6 +6,7 @@ use App\Enums\Product\MeasurementUnit;
 use App\Enums\Product\ProductType;
 use App\Enums\Product\VatRate;
 use App\Http\Requests\Product\StoreProductRequest;
+use App\Http\Requests\Product\UpdateProductRequest;
 use App\Services\ProductService;
 use App\Models\Product;
 use App\Traits\ApiResponseTrait;
@@ -48,6 +49,20 @@ class ProductController extends Controller
     {
         $product = $this->productService->createProduct($storeProductRequest);
 
-        return $this->successResponse($product, 'Product created successfully', 201);
+        return $this->successResponse($product);
+    }
+
+    public function update(UpdateProductRequest $updateProductRequest, Product $product)
+    {
+        $product = $this->productService->updateProduct($updateProductRequest, $product);
+
+        return $this->successResponse($product);
+    }
+
+    public function destroy(Product $product)
+    {
+        $product->delete();
+
+        return $this->emptyResponse();
     }
 }

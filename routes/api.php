@@ -64,10 +64,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/visitFrequencies/{visitFrequency}', [VisitFrequencyController::class, 'show']);
     Route::get('/visitFrequencies', [VisitFrequencyController::class, 'index']);
 
-    // Product
+    // Products routes
     Route::get('/productOptions', [ProductController::class, 'productOptionsIndex']);
-    Route::get('/products', [ProductController::class, 'index']);
+    Route::delete('/products/{product}', [ProductController::class, 'destroy']);
+    Route::patch('/products/{product}', [ProductController::class, 'update']);
+    Route::get('/products/{product}', [ProductController::class, 'show']);
     Route::post('/products', [ProductController::class, 'store']);
+    Route::get('/products', [ProductController::class, 'index']);
 });
-
-// Test without sanctum middleware (too many authentication issues with Postman or Bruno...)
