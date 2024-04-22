@@ -27,7 +27,7 @@ class StoreProductRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:255',
-            'reference' => 'required|string|max:45',
+            'reference' => 'required|string|max:45|unique:products,reference',
             'purchase_price' => 'required|numeric',
             'selling_price' => 'required|numeric',
             'brand_id' => 'required|integer|exists:brands,id',
@@ -38,6 +38,13 @@ class StoreProductRequest extends FormRequest
             'stock' => 'nullable|integer',
             'image' => 'nullable|string',
             'is_active' => 'boolean',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'reference.unique' => trans('products.reference_unique')
         ];
     }
 }

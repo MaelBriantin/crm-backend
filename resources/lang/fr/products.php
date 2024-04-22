@@ -2,7 +2,7 @@
     return [
         'product_types' => [
             'default' => 'Hygiène et entretien',
-            'clothes' => 'Vêtements',
+            'clothes' => 'Habillement',
         ],
         'vat_rates' => [
             'none' => 'Aucun',
@@ -20,4 +20,5 @@
             'g' => 'Gramme (g)',
             'kg' => 'Kilogramme (kg)',
         ],
+        'reference_unique' => 'La référence indiquée est déjà utilisée. Veuillez en choisir une autre.',
     ];

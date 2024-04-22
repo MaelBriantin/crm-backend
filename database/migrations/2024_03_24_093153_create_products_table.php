@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('description')->nullable();
-            $table->string('reference')->nullable();
+            $table->string('reference')->nullable()->unique();
             $table->unsignedBigInteger('brand_id');
             $table->decimal('purchase_price')->nullable();
             $table->decimal('selling_price')->nullable();

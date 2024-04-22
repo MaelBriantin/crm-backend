@@ -28,7 +28,7 @@ class UpdateProductRequest extends FormRequest
             'id' => 'required|integer|exists:products,id',
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:255',
-            'reference' => 'required|string|max:45',
+            'reference' => 'required|string|max:45|unique:products,reference,' . $this->id . ',id',
             'purchase_price' => 'required|numeric',
             'selling_price' => 'required|numeric',
             'brand_id' => 'required|integer|exists:brands,id',
@@ -39,6 +39,13 @@ class UpdateProductRequest extends FormRequest
             'stock' => 'nullable|integer',
             'image' => 'nullable|string',
             'is_active' => 'boolean',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'reference.unique' => trans('products.reference_unique')
         ];
     }
 }
