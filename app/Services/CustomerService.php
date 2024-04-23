@@ -3,8 +3,8 @@
 namespace App\Services;
 
 use App\Exceptions\CustomerCreationException;
-use App\Http\Requests\StoreCustomerRequest;
-use App\Http\Requests\UpdateCustomerRequest;
+use App\Http\Requests\Customer\StoreCustomerRequest;
+use App\Http\Requests\Customer\UpdateCustomerRequest;
 use App\Models\Relationship;
 use App\Models\VisitFrequency;
 use App\Models\Customer;

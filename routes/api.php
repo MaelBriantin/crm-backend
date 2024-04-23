@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\VisitFrequencyController;
 use App\Http\Controllers\RelationshipController;
 use App\Http\Controllers\CustomerController;
@@ -62,6 +63,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // VisitFrequency routes
     Route::get('/visitFrequencies/{visitFrequency}', [VisitFrequencyController::class, 'show']);
     Route::get('/visitFrequencies', [VisitFrequencyController::class, 'index']);
-});
 
-// Test without sanctum middleware (too many authentication issues with Postman or Bruno...)
+    // Products routes
+    Route::get('/productOptions', [ProductController::class, 'productOptionsIndex']);
+    Route::delete('/products/{product}', [ProductController::class, 'destroy']);
+    Route::patch('/products/{product}', [ProductController::class, 'update']);
+    Route::get('/products/{product}', [ProductController::class, 'show']);
+    Route::post('/products', [ProductController::class, 'store']);
+    Route::get('/products', [ProductController::class, 'index']);
+});
