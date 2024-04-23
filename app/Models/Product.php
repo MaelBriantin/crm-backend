@@ -25,6 +25,7 @@ class Product extends Model
         'measurement_quantity',
         'measurement_unit',
         'stock',
+        'alert_stock',
         'image',
         'brand_id',
         'user_id',

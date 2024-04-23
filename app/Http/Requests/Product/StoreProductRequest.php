@@ -36,6 +36,7 @@ class StoreProductRequest extends FormRequest
             'measurement_unit' => ['nullable', 'string', 'in:' . MeasurementUnit::request()],
             'vat_rate' => ['string', 'in:' . VatRate::request()],
             'stock' => 'nullable|integer',
+            'alert_stock' => 'nullable|integer',
             'image' => 'nullable|string',
             'is_active' => 'boolean',
         ];
