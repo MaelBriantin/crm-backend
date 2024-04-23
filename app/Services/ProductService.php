@@ -44,6 +44,10 @@ class ProductService
             $data = $productRequest->validated();
             $data['user_id'] ?? $data['user_id'] = auth()->user()->id;
 
+            if ($product->product_type === ProductType::CLOTHES) {
+                $this->productSizeService->updateProductSize($product, $productRequest);
+            }
+
             $product->update($data);
             return $product;
         } catch (\Exception $e) {

@@ -28,4 +28,10 @@ class ProductSizeService
             }
         }
     }
+
+    public function updateProductSize($product, $productRequest)
+    {
+        $product->productSizes()->delete();
+        $this->createProductSize($product, $productRequest);
+    }
 }
