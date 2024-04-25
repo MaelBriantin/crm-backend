@@ -47,7 +47,13 @@ class Product extends Model
     protected $appends = [
         'selling_price_with_vat',
         'product_type_label',
+        'brand_name',
     ];
+
+    public function getBrandNameAttribute()
+    {
+        return $this->brand->name;
+    }
 
     public function getSellingPriceWithVatAttribute()
     {
