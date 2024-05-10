@@ -10,19 +10,23 @@ use App\Http\Requests\Product\UpdateProductRequest;
 use App\Services\ProductService;
 use App\Models\Product;
 use App\Traits\ApiResponseTrait;
+use Exception;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
     use ApiResponseTrait;
 
-    protected $productService;
+    protected ProductService $productService;
 
     public function __construct(ProductService $productService)
     {
         $this->productService = $productService;
     }
 
+    /**
+     * @throws Exception
+     */
     public function productOptionsIndex()
     {
         $productOptions = [
