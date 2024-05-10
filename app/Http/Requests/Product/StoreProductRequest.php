@@ -30,6 +30,7 @@ class StoreProductRequest extends FormRequest
             'reference' => 'required|string|max:45|unique:products,reference',
             'purchase_price' => 'required|numeric',
             'selling_price' => 'required|numeric',
+            'selling_price_with_vat' => 'required|numeric',
             'brand_id' => 'required|integer|exists:brands,id',
             'product_type' => ['required', 'string', 'in:' . ProductType::request()],
             'measurement_quantity' => 'nullable|integer',
