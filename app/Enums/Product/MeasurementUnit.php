@@ -2,9 +2,14 @@
 
 namespace App\Enums\Product;
 
-enum MeasurementUnit
+use App\Interfaces\LabelTranslationInterface;
+use App\Traits\LabelTranslationTrait;
+use Exception;
+
+abstract class MeasurementUnit implements LabelTranslationInterface
 {
-    const NONE = null;
+    use LabelTranslationTrait;
+
     const MILLIGRAM = 'mg';
     const GRAM = 'g';
     const KILOGRAM = 'kg';
@@ -13,31 +18,23 @@ enum MeasurementUnit
     const LITER = 'l';
     const DECILITER = 'dl';
 
+    public static function getTranslationKey(): string
+    {
+        return 'products.measurement_units';
+    }
+
+    /**
+     * @throws Exception
+     */
     public static function toLabelValue(): array
     {
-        return [
-            // self::NONE => trans('measurement_units.'.self::NONE),
-            trans('products.measurement_units.'.self::MILLIGRAM) => self::MILLIGRAM,
-            trans('products.measurement_units.'.self::GRAM) => self::GRAM,
-            trans('products.measurement_units.'.self::KILOGRAM) => self::KILOGRAM,
-            trans('products.measurement_units.'.self::MILLILITER) => self::MILLILITER,
-            trans('products.measurement_units.'.self::CENTILITER) => self::CENTILITER,
-            trans('products.measurement_units.'.self::LITER) => self::LITER,
-            trans('products.measurement_units.'.self::DECILITER) => self::DECILITER
-        ];
+        return static::getLabelValues(static::class);
     }
 
     public static function toArray(): array
     {
-        return [
-            self::MILLIGRAM,
-            self::GRAM,
-            self::KILOGRAM,
-            self::MILLILITER,
-            self::CENTILITER,
-            self::LITER,
-            self::DECILITER
-        ];
+        $abstractionClass = new \ReflectionClass(static::class);
+        return $abstractionClass->getConstants();
     }
 
     public static function request(): string

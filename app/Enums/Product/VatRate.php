@@ -2,7 +2,7 @@
 
 namespace App\Enums\Product;
 
-enum VatRate
+abstract class VatRate
 {
     const FIVE_FIVE = 5.5;
     const TEN = 10;
