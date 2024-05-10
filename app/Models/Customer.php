@@ -11,23 +11,7 @@ class Customer extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'firstname',
-        'lastname',
-        'email',
-        'phone',
-        'address',
-        'city',
-        'postcode',
-        'notes',
-        'relationship_id',
-        'visit_frequency_id',
-        'visit_schedule',
-        'visit_day',
-        'is_active',
-        'sector_id',
-        'user_id',
-    ];
+    protected $guarded = [];
 
     protected function casts(): array
     {
