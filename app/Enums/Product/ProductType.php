@@ -2,7 +2,7 @@
 
 namespace App\Enums\Product;
 
-enum ProductType
+abstract class ProductType
 {
     const DEFAULT = 'default';
     const CLOTHES = 'clothes';
@@ -10,8 +10,8 @@ enum ProductType
     public static function toLabelValue(): array
     {
         return [
-            trans('products.product_types.default') => self::DEFAULT,
-            trans('products.product_types.clothes') => self::CLOTHES,
+            trans('products.product_types.'.self::DEFAULT) => self::DEFAULT,
+            trans('products.product_types.'.self::CLOTHES) => self::CLOTHES,
         ];
     }
 

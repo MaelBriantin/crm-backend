@@ -1,26 +1,23 @@
 <?php
 
-namespace App\Enums\Product;
+namespace App\Enums\Order;
 
 use App\Interfaces\LabelTranslationInterface;
 use App\Traits\LabelTranslationTrait;
 use Exception;
 
-abstract class MeasurementUnit implements LabelTranslationInterface
+abstract class PaymentMethod implements LabelTranslationInterface
 {
     use LabelTranslationTrait;
 
-    const MILLIGRAM = 'mg';
-    const GRAM = 'g';
-    const KILOGRAM = 'kg';
-    const MILLILITER = 'ml';
-    const CENTILITER = 'cl';
-    const LITER = 'l';
-    const DECILITER = 'dl';
+    const CREDIT_CARD = 'credit_card';
+    const CHECK = 'check';
+    const CASH = 'cash';
+    const BANK_TRANSFER = 'bank_transfer';
 
     public static function getTranslationKey(): string
     {
-        return 'products.measurement_units';
+        return 'orders.means_of_payment';
     }
 
     /**
@@ -41,4 +38,5 @@ abstract class MeasurementUnit implements LabelTranslationInterface
     {
         return implode(',', self::toArray());
     }
+
 }

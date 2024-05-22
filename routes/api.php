@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\VisitFrequencyController;
 use App\Http\Controllers\RelationshipController;
@@ -35,7 +36,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/sectors', [SectorController::class, 'store']);
     Route::get('/sectors', [SectorController::class, 'index']);
 
-    // Posctodes routes
+    // Postcodes routes
     Route::delete('/postcodes/{postcode}', [PostcodeController::class, 'destroy']);
     Route::patch('/postcodes/{postcode}', [PostcodeController::class, 'update']);
     Route::get('/postcodes/{postcode}', [PostcodeController::class, 'show']);
@@ -71,4 +72,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/products/{product}', [ProductController::class, 'show']);
     Route::post('/products', [ProductController::class, 'store']);
     Route::get('/products', [ProductController::class, 'index']);
+
+    // Orders routes
+    Route::get('/orderOptions', [OrderController::class, 'getOrderOptions']);
+    Route::post('/orders', [OrderController::class, 'store']);
 });

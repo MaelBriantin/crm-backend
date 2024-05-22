@@ -14,38 +14,23 @@ class Product extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'name',
-        'description',
-        'reference',
-        'purchase_price',
-        'selling_price',
-        'vat_rate',
-        'product_type',
-        'measurement_quantity',
-        'measurement_unit',
-        'stock',
-        'alert_stock',
-        'image',
-        'brand_id',
-        'user_id',
-        'created_at',
-        'updated_at',
-    ];
+    protected $guarded = [];
 
-    protected $casts = [
-        'purchase_price' => 'float',
-        'selling_price' => 'float',
-        'vat_rate' => 'float',
-        'is_active' => 'boolean',
-    ];
+    public function casts(): array
+    {
+        return [
+            'purchase_price' => 'float',
+            'selling_price' => 'float',
+            'vat_rate' => 'float',
+            'is_active' => 'boolean',
+        ];
+    }
 
     protected $with = [
         'productSizes',
     ];
 
     protected $appends = [
-        'selling_price_with_vat',
         'product_type_label',
         'brand_name',
     ];
@@ -53,11 +38,6 @@ class Product extends Model
     public function getBrandNameAttribute()
     {
         return $this->brand->name;
-    }
-
-    public function getSellingPriceWithVatAttribute()
-    {
-        return $this->selling_price + ($this->selling_price * $this->vat_rate / 100);
     }
 
     public function getProductTypeLabelAttribute()
