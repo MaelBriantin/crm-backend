@@ -6,7 +6,6 @@ use App\Exceptions\SectorCreationException;
 use App\Models\Sector;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
-use Exception;
 
 class SectorService
 {
@@ -44,7 +43,6 @@ class SectorService
     {
         try {
             DB::beginTransaction();
-            
             if (isset($data['postcodes'])) {
                 $sector->postcodes()->delete();
                 foreach ($data['postcodes'] as $postcode) {
@@ -53,7 +51,7 @@ class SectorService
             }
 
             $sector->update($data);
-            
+
             DB::commit();
 
             return $sector;

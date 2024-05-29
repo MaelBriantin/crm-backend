@@ -20,7 +20,7 @@ class SectorCreationException extends Exception
                 $postcode = $matches[1] ?? null;
                 $message = trans('postcodes.postcode_unique', ['postcode' => $postcode]);
                 $this->postcode = $postcode;
-            } 
+            }
             else if (str_contains($e->getMessage(), 'postcodes.postcodes_postcode_city_unique')){
                 preg_match("/'(\d+-[^']+)'/", $e->getMessage(), $matches);
                 $postcode_city = $matches[1] ?? null;
@@ -31,9 +31,10 @@ class SectorCreationException extends Exception
                 $message = trans('sectors.creation_error');
             }
         } else {
-            $message = trans('sectors.creation_error');
+            $message = $e->getMessage();
+//            $message = trans('sectors.creation_error');
         }
 
-        parent::__construct($message, $e->getCode(), $e);
+        parent::__construct($message, (int) $e->getCode(), $e);
     }
 }

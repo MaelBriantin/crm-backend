@@ -6,7 +6,9 @@ use App\Models\Sector;
 use App\Traits\ApiResponseTrait;
 use App\Services\PostcodeService;
 use App\Services\SectorService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class SectorController extends Controller
 {
@@ -19,25 +21,57 @@ class SectorController extends Controller
         $this->postcodeService = $postcodeService;
         $this->sectorService = $sectorService;
     }
-
-    public function index($withPostcodes = false)
+    /**
+     * @return JsonResponse
+     * @param mixed $withPostcodes
+     */
+    public function index($withPostcodes = false): JsonResponse
     {
-        return $withPostcodes
-            ? $this->successResponse(Sector::withCount('postcodes')
-                                    ->with('postcodes')
-                                    ->withCount('customers')
-                                    ->get()
-                                    ->each
-                                    ->append('postcodes_list'))
-            : $this->successResponse(Sector::withCount(['postcodes', 'customers'])->get());
-    }
+        if($withPostcodes) {
 
-    public function indexWithPostcodes()
+//            return $this->successResponse(Sector::withCount(['postcodes', 'customers'])
+//                ->with('postcodes')
+//                ->withCount('customers')
+//                ->get()
+//                ->each
+//                ->append('postcodes_list'));
+            $sectors = DB::select("
+                SELECT sectors.id,
+                    sectors.name,
+                COUNT(postcodes.id) AS postcodes_count,
+                COUNT(DISTINCT customers.id) AS customers_count,
+                (SELECT GROUP_CONCAT(CONCAT(postcodes.postcode, ' - ', postcodes.city) SEPARATOR ', ')
+                    FROM postcodes
+                WHERE postcodes.sector_id = sectors.id) AS postcodes_list,
+                (SELECT JSON_ARRAYAGG(JSON_OBJECT('id', postcodes.id, 'postcode', postcodes.postcode, 'city', postcodes.city))
+                    FROM postcodes
+                WHERE postcodes.sector_id = sectors.id) AS postcodes
+                    FROM sectors
+                        INNER JOIN postcodes ON sectors.id = postcodes.sector_id
+                        INNER JOIN customers ON sectors.id = customers.sector_id
+                GROUP BY sectors.id, sectors.name");
+
+            collect($sectors)->map(function($sector) {
+                $sector->postcodes_list = explode(', ', $sector->postcodes_list);
+                $sector->postcodes = json_decode($sector->postcodes);
+            });
+            return $this->successResponse($sectors);
+        }
+        return $this->successResponse(Sector::withCount(['postcodes', 'customers'])->get());
+    }
+    /**
+     * @return JsonResponse
+     */
+    public function indexWithPostcodes(): JsonResponse
     {
         return $this->index(true);
     }
-
-    public function show($sector, $withPostcodes = false)
+    /**
+     * @return JsonResponse|JsonResponse<array>
+     * @param mixed $sector
+     * @param mixed $withPostcodes
+     */
+    public function show($sector, $withPostcodes = false): JsonResponse
     {
         $result = is_numeric($sector)
             ? Sector::withCount('postcodes')->find($sector)
@@ -52,20 +86,24 @@ class SectorController extends Controller
 
         return $this->emptyResponse();
     }
-
-
-    public function showWithPostcodes($sector)
+    /**
+     * @return JsonResponse|JsonResponse<array>
+     * @param mixed $sector
+     */
+    public function showWithPostcodes($sector): JsonResponse
     {
         return $this->show($sector, true);
     }
-
-    public function store(Request $request)
+    /**
+     * @return JsonResponse
+     */
+    public function store(Request $request): JsonResponse
     {
         $validatedData = $request->validate([
             'name' => "required|string|max:255|unique:sectors,name",
             'postcodes' => "array"
-        ], 
-        [ 
+        ],
+        [
             'name.unique' => trans('sectors.name_unique')
         ]);
 
@@ -73,14 +111,16 @@ class SectorController extends Controller
 
         return $this->successResponse($sector);
     }
-
-    public function update(Request $request, Sector $sector)
+    /**
+     * @return JsonResponse
+     */
+    public function update(Request $request, Sector $sector): JsonResponse
     {
         $validatedData = $request->validate([
             'name' => "required|string|max:255|unique:sectors,name,$request->id",
             'postcodes' => "array"
-        ], 
-        [ 
+        ],
+        [
             'name.unique' => trans('sectors.name_unique', ['name' => $request->name])
         ]);
 
@@ -88,8 +128,10 @@ class SectorController extends Controller
 
         return $this->successResponse($sector);
     }
-
-    public function destroy(Sector $sector)
+    /**
+     * @return JsonResponse
+     */
+    public function destroy(Sector $sector): JsonResponse
     {
         $sector->delete();
 
