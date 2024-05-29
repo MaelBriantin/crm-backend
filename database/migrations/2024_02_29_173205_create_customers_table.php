@@ -37,6 +37,8 @@ return new class extends Migration
 
             $table->index('is_active');
             $table->index('user_id');
+
+            $table->softDeletes();
         });
     }
 
