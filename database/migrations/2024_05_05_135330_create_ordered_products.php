@@ -17,16 +17,14 @@ return new class extends Migration
                 ->constrained()
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
-            $table->foreignId('product_id')
-                ->constrained()
-                ->cascadeOnDelete()
-                ->cascadeOnUpdate();
-            $table->unsignedBigInteger('product_size_id')->nullable();
-            $table->integer('ordered_quantity');
+            $table->unsignedBigInteger('ordered_product_id');
             $table->string('product_type');
+            $table->integer('ordered_quantity');
+            $table->string('product_reference');
+            $table->string('product_name');
+            $table->decimal('no_vat_price');
+            $table->decimal('vat_price');
             $table->timestamps();
-
-            $table->foreign('product_size_id')->references('id')->on('product_sizes')->onUpdate('cascade')->onDelete('set null');
         });
     }
 

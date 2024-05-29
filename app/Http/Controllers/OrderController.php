@@ -32,6 +32,23 @@ class OrderController extends Controller
         return static::successResponse([$orderOptions]);
     }
 
+    public function index()
+    {
+        $orders = Order::withCount('orderedProducts')
+            ->orderByDesc('order_number')
+            ->with('customer')
+            ->get();
+        $orders->each(function ($order) {
+            $order->append([
+                'customer_full_name',
+                'customer_sector_name',
+                'payment_status',
+                'payment_status_label',
+            ]);
+        });
+        return static::successResponse($orders);
+    }
+
     public function store(StoreOrderRequest $request)
     {
         try {

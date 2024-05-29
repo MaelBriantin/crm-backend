@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
+            $table->string('order_number')->unique();
             $table->foreignId('user_id')
                 ->constrained()
                 ->cascadeOnDelete()
@@ -27,8 +28,11 @@ return new class extends Migration
             $table->float('vat_total');
             $table->float('no_vat_total');
             $table->date('deferred_date')->nullable();
-            $table->boolean('is_payed')->default(true);
+            $table->boolean('is_paid')->default(true);
             $table->timestamps();
+
+            $table->index('user_id');
+            $table->index('customer_id');
         });
     }
 
