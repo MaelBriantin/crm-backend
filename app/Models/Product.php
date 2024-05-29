@@ -45,6 +45,11 @@ class Product extends Model
         return trans('products.product_types.' . $this->product_type);
     }
 
+    public function orderedProducts()
+    {
+        return $this->hasMany(OrderedProduct::class);
+    }
+
     public function productSizes()
     {
         return $this->hasMany(ProductSize::class);

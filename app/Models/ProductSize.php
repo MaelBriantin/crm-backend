@@ -17,6 +17,11 @@ class ProductSize extends Model
         'updated_at',
     ];
 
+    public function orderedProducts()
+    {
+        return $this->hasMany(OrderedProduct::class);
+    }
+
     public function products()
     {
         return $this->hasMany(Product::class);

@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Cache;
 use App\Scopes\UserScope;
 
 class Customer extends Model
@@ -13,12 +12,17 @@ class Customer extends Model
 
     protected $guarded = [];
 
+    protected $appends = ['full_name', 'full_address', 'sector_name'];
+
     protected function casts(): array
     {
         return [
             'is_active' => 'boolean',
         ];
     }
+
+
+//    protected $with = ['sector', 'relationship', 'visitFrequency'];
 
     public function sector()
     {
@@ -45,11 +49,11 @@ class Customer extends Model
         return "$this->address - $this->postcode $this->city";
     }
 
-    public function getSectorNameAttribute()
+    public function getsectornameattribute()
     {
-        if (!$this->sector) {
+      if (!$this->sector) {
             return trans('sectors.out_of_sector');
-        }
+       }
         return $this->sector->name;
     }
 
@@ -61,6 +65,11 @@ class Customer extends Model
     public function visitFrequency()
     {
         return $this->belongsTo(VisitFrequency::class);
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
     }
 
     protected static function booted()

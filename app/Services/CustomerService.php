@@ -77,19 +77,20 @@ class CustomerService
             if(!is_null($validatedData['sector']) && $customer->sector_id != $validatedData['sector']['id']){
                 $sectorId = !is_null($validatedData['sector']) && $validatedData['sector']['id'] != 0
                     ? $validatedData['sector']['id'] : null;
-    
+
                 if ($sectorId && !Sector::where('id', $sectorId)->exists()) {
                     // Throw an exception if the sector_id does not exist in the database
                     throw new \Exception(trans('customers.invalid_sector_id'));
                 }
             } else {
                 $sectorId = $customer->sector_id;
+                unset($validatedData['sector']);
             }
 
             if(!is_null($validatedData['visit_frequency']) && $customer->visit_frequency_id != $validatedData['visit_frequency']['id']){
                 $visitFrequencyId = !is_null($validatedData['visit_frequency']) && $validatedData['visit_frequency']['id'] != 0
                     ? $validatedData['visit_frequency']['id'] : null;
-    
+
                 if ($visitFrequencyId && !VisitFrequency::where('id', $visitFrequencyId)->exists()) {
                     // Throw an exception if the visit_frequency_id does not exist in the database
                     throw new \Exception(trans('customers.invalid_visit_frequency_id'));
@@ -103,7 +104,7 @@ class CustomerService
             if(!is_null($validatedData['relationship']) && $customer->relationship_id != $validatedData['relationship']['id']){
                 $relationshipId = !is_null($validatedData['relationship']) && $validatedData['relationship']['id'] != 0
                     ? $validatedData['relationship']['id'] : null;
-    
+
                 if ($relationshipId && !Relationship::where('id', $relationshipId)->exists()) {
                     // Throw an exception if the relationship_id does not exist in the database
                     throw new \Exception(trans('customers.invalid_relationship_id'));
@@ -118,7 +119,11 @@ class CustomerService
             $validatedData['visit_frequency_id'] = $visitFrequencyId;
             $validatedData['relationship_id'] = $relationshipId;
             $validatedData['user_id'] = auth()->user()->id;
-            
+
+            unset($validatedData['visit_frequency']);
+            unset($validatedData['relationship']);
+            unset($validatedData['sector']);
+
             $customer->update($validatedData);
 
             return $customer;
