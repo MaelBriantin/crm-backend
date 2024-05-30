@@ -51,7 +51,7 @@ class OrderService
                 'customer_id' => $validatedData['customer_id'],
                 'customer_full_name' => $customer->firstname . ' ' . $customer->lastname,
                 'customer_address' => $customer->address,
-                'customer_city' => $customer->postcode . ' ' . $customer->city,
+                'customer_city' => $customer->postcode . ' - ' . $customer->city,
                 'order_date' => now(),
                 'payment_method' => $validatedData['payment_method'],
                 'comment' => $validatedData['comment'] ?? null,

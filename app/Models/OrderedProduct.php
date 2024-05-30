@@ -11,16 +11,32 @@ class OrderedProduct extends Model
 {
     protected $guarded = [];
 
-    protected $with = ['orderedProduct'];
+    protected $with = ['product', 'productSize'];
+
+    protected $appends = ['vat_total_price', 'no_vat_total_price'];
+
+    public function getVatTotalPriceAttribute()
+    {
+        return $this->ordered_quantity * $this->vat_price;
+    }
+
+    public function getNoVatTotalPriceAttribute()
+    {
+        return $this->ordered_quantity * $this->no_vat_price;
+    }
 
     public function order(): BelongsTo
     {
         return $this->belongsTo(Order::class);
     }
 
-    public function orderedProduct()
+    public function product()
     {
-        return $this->morphTo(type: 'product_type');
+        return $this->belongsTo(Product::class);
     }
 
+    public function productSize()
+    {
+        return $this->belongsTo(ProductSize::class);
+    }
 }

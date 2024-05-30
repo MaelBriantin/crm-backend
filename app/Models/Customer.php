@@ -14,7 +14,7 @@ class Customer extends Model
 
     protected $guarded = [];
 
-    protected $appends = ['full_name', 'full_address', 'sector_name'];
+    protected $appends = ['full_name', 'full_address'];
 
     protected function casts(): array
     {
@@ -49,14 +49,6 @@ class Customer extends Model
     public function getFullAddressAttribute()
     {
         return "$this->address - $this->postcode $this->city";
-    }
-
-    public function getsectornameattribute()
-    {
-      if (!$this->sector) {
-            return trans('sectors.out_of_sector');
-       }
-        return $this->sector->name;
     }
 
     public function relationship()

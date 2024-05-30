@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'means_of_payment' => [
+    'payment_methods' => [
         'cash' => 'Espèces',
         'credit_card' => 'Carte de crédit',
         'check' => 'Chèque',

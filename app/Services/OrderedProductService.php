@@ -33,7 +33,11 @@ class OrderedProductService
         $newOrderedProduct = new OrderedProduct();
         $newOrderedProduct->order_id = $order_id;
         $newOrderedProduct->product_type = $validatedData['product_type'];
-        $newOrderedProduct->ordered_product_id = $validatedData['product_type' === ProductType::CLOTHES ? 'product_size_id' : 'product_id'];
+        $newOrderedProduct->product_id = $validatedData['product_id'];
+        $newOrderedProduct->product_size_id =
+            $validatedData['product_type'] === ProductType::CLOTHES
+                ? $validatedData['product_size_id']
+                : null;
         $newOrderedProduct->ordered_quantity = $validatedData['ordered_quantity'];
         $newOrderedProduct->product_name = $product['name'];
         $newOrderedProduct->product_reference = $product['reference'];

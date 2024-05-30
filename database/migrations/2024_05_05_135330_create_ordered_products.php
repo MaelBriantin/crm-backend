@@ -17,7 +17,8 @@ return new class extends Migration
                 ->constrained()
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
-            $table->unsignedBigInteger('ordered_product_id');
+            $table->unsignedBigInteger('product_id');
+            $table->unsignedBigInteger('product_size_id')->nullable();
             $table->string('product_type');
             $table->integer('ordered_quantity');
             $table->string('product_reference');

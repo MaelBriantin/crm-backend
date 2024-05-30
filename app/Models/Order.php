@@ -26,29 +26,6 @@ class Order extends Model
         ];
     }
 
-    protected array $cacheableAttributes = [
-        'order_date',
-        'deferred_date',
-        'customer_full_name',
-        'customer_sector_name',
-        'payment_status_label',
-    ];
-
-//    public function __get($key)
-//    {
-//        if (in_array($key, $this->cacheableAttributes)) {
-//            $cacheKey = 'order_' . $this->id . '_' . $key;
-//            return Cache::remember($cacheKey, $this->cacheLifetime, function () use ($key) {
-//                return $this->getAttributeValue($key);
-//            });
-//        }
-//        return parent::__get($key);
-//    }
-
-    public function getSectorNameAttribute()
-    {
-        return $this->sector->name;
-    }
 
     public function getOrderDateAttribute(): string
     {
@@ -61,6 +38,11 @@ class Order extends Model
             return null;
         }
         return Carbon::parse($this->attributes['deferred_date'])->isoFormat('L');
+    }
+
+    public function getPaymentMethodLabelAttribute()
+    {
+        return trans('orders.payment_methods.' . $this->payment_method);
     }
 
     public function getPaymentStatusLabelAttribute()

@@ -8,7 +8,6 @@ use App\Models\Order;
 use App\Services\OrderService;
 use App\Traits\ApiResponseTrait;
 use Exception;
-use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
@@ -40,12 +39,22 @@ class OrderController extends Controller
             ->get();
         $orders->each(function ($order) {
             $order->append([
-                'sector_name',
                 'payment_status',
                 'payment_status_label',
             ]);
         });
         return static::successResponse($orders);
+    }
+
+    public function show(Order $order)
+    {
+        $order->load('customer', 'sector', 'orderedProducts');
+        $order->append([
+            'payment_status',
+            'payment_status_label',
+            'payment_method_label'
+        ]);
+        return static::successResponse($order);
     }
 
     public function store(StoreOrderRequest $request)
