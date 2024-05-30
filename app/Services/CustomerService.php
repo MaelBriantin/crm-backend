@@ -55,6 +55,10 @@ class CustomerService
             $validatedData['relationship_id'] = $relationshipId;
             $validatedData['user_id'] = auth()->user()->id;
 
+            unset($validatedData['visit_frequency']);
+            unset($validatedData['relationship']);
+            unset($validatedData['sector']);
+
             return Customer::create($validatedData);
 
         } catch (\Exception $e) {
