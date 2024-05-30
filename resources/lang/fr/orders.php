@@ -8,9 +8,9 @@ return [
         'bank_transfer' => 'Virement bancaire',
     ],
     'payment_status' => [
-        'paid' => 'Payée',
-        'not_paid' => 'Non payée',
-        'pending' => 'En attente',
+        'paid' => 'Payé',
+        'unpaid' => 'Impayé',
+        'pending' => 'Différé',
     ],
     'order_creation_error' => 'Une erreur est survenue lors de l\'enregistrement de la commande.',
     'product_quantity_error' => 'La quantité de :product_name commandée est supérieure à la quantité en stock.',

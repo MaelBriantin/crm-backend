@@ -34,15 +34,20 @@ class Order extends Model
         'payment_status_label',
     ];
 
-    public function __get($key)
+//    public function __get($key)
+//    {
+//        if (in_array($key, $this->cacheableAttributes)) {
+//            $cacheKey = 'order_' . $this->id . '_' . $key;
+//            return Cache::remember($cacheKey, $this->cacheLifetime, function () use ($key) {
+//                return $this->getAttributeValue($key);
+//            });
+//        }
+//        return parent::__get($key);
+//    }
+
+    public function getSectorNameAttribute()
     {
-        if (in_array($key, $this->cacheableAttributes)) {
-            $cacheKey = 'order_' . $this->id . '_' . $key;
-            return Cache::remember($cacheKey, $this->cacheLifetime, function () use ($key) {
-                return $this->getAttributeValue($key);
-            });
-        }
-        return parent::__get($key);
+        return $this->sector->name;
     }
 
     public function getOrderDateAttribute(): string
@@ -58,16 +63,6 @@ class Order extends Model
         return Carbon::parse($this->attributes['deferred_date'])->isoFormat('L');
     }
 
-    public function getCustomerFullNameAttribute(): string
-    {
-        return $this->customer->full_name;
-    }
-
-    public function getCustomerSectorNameAttribute(): string
-    {
-        return $this->customer->sector_name;
-    }
-
     public function getPaymentStatusLabelAttribute()
     {
         return trans('orders.payment_status.' . $this->payment_status);
@@ -75,17 +70,15 @@ class Order extends Model
 
     public function getPaymentStatusAttribute()
     {
-        if (!$this->is_paid
-            && $this->deferred_date > now())
-        {
-            return 'not_paid';
+        $today = now()->format('Y-m-d');
+        $deferredDate = $this->attributes['deferred_date'];
+        if (!$this->is_paid) {
+            if ($this->deferred_date !== null && $deferredDate> $today) {
+                return 'pending';
+            }
+            return 'unpaid';
         }
-
-        if (!$this->is_paid && !($this->deferred_date > now())) {
-            return 'pending';
-        }
-
-        return $this->is_paid ? 'paid' : 'not_paid';
+        return 'paid';
     }
 
     public function user(): BelongsTo
@@ -101,6 +94,11 @@ class Order extends Model
     public function orderedProducts(): HasMany
     {
         return $this->hasMany(OrderedProduct::class);
+    }
+
+    public function sector(): BelongsTo
+    {
+        return $this->belongsTo(Sector::class);
     }
 
     protected static function booted(): void

@@ -22,13 +22,20 @@ return new class extends Migration
                 ->constrained()
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
-            $table->date('order_date');
+            $table->foreignId('sector_id')
+                ->constrained()
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
             $table->string('payment_method');
-            $table->string('comment')->nullable();
             $table->float('vat_total');
             $table->float('no_vat_total');
+            $table->date('order_date');
             $table->date('deferred_date')->nullable();
             $table->boolean('is_paid')->default(true);
+            $table->string('customer_full_name');
+            $table->string('customer_address');
+            $table->string('customer_city');
+            $table->string('comment')->nullable();
             $table->timestamps();
 
             $table->index('user_id');

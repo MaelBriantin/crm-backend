@@ -36,12 +36,11 @@ class OrderController extends Controller
     {
         $orders = Order::withCount('orderedProducts')
             ->orderByDesc('order_number')
-            ->with('customer')
+            ->with('customer', 'sector')
             ->get();
         $orders->each(function ($order) {
             $order->append([
-                'customer_full_name',
-                'customer_sector_name',
+                'sector_name',
                 'payment_status',
                 'payment_status_label',
             ]);

@@ -3,8 +3,10 @@
 namespace App\Services;
 
 use App\Http\Requests\Order\StoreOrderRequest;
+use App\Models\Customer;
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\Sector;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Exception;
@@ -39,10 +41,17 @@ class OrderService
         try {
             DB::beginTransaction();
             $total = $this->calculateTotal($validatedData['products']);
+            $customer = Customer::find($validatedData['customer_id']);
+            $sector = Sector::find($customer->sector_id);
+
             $newOrder = Order::create([
                 'order_number' => $this->generateOrderNumber(),
                 'user_id' => auth()->user()->id,
+                'sector_id' => $sector->id,
                 'customer_id' => $validatedData['customer_id'],
+                'customer_full_name' => $customer->firstname . ' ' . $customer->lastname,
+                'customer_address' => $customer->address,
+                'customer_city' => $customer->postcode . ' ' . $customer->city,
                 'order_date' => now(),
                 'payment_method' => $validatedData['payment_method'],
                 'comment' => $validatedData['comment'] ?? null,
