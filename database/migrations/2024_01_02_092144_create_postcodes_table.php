@@ -20,8 +20,6 @@ return new class extends Migration
 
             $table->unique(['postcode', 'city']);
             $table->foreign('sector_id')->references('id')->on('sectors')->cascadeOnDelete()->cascadeOnUpdate();
-
-            $table->softDeletes();
         });
     }
 
