@@ -9,13 +9,16 @@ use Illuminate\Support\Facades\DB;
 
 class SectorService
 {
-    protected $postcodeService;
+    protected PostcodeService $postcodeService;
 
     public function __construct(PostcodeService $postcodeService)
     {
         $this->postcodeService = $postcodeService;
     }
 
+    /**
+     * @throws SectorCreationException
+     */
     public function createSector($data)
     {
         try {
@@ -27,7 +30,8 @@ class SectorService
             ]);
 
             foreach ($data['postcodes'] as $postcode) {
-                $this->postcodeService->createPostcodes($postcode['postcode'], $postcode['city'], $sector->id);
+                $this->postcodeService
+                    ->createPostcodes($postcode['postcode'], $postcode['city'], $sector->id);
             }
 
             DB::commit();
@@ -39,14 +43,20 @@ class SectorService
         }
     }
 
-    public function updateSector($data, Sector $sector)
+    /**
+     * @throws SectorCreationException
+     */
+    public function updateSector($data, Sector $sector): Sector
     {
         try {
             DB::beginTransaction();
             if (isset($data['postcodes'])) {
-                $sector->postcodes()->delete();
+                $sector
+                    ->postcodes()
+                    ->delete();
                 foreach ($data['postcodes'] as $postcode) {
-                    $this->postcodeService->createPostcodes($postcode['postcode'], $postcode['city'], $sector->id);
+                    $this->postcodeService
+                        ->createPostcodes($postcode['postcode'], $postcode['city'], $sector->id);
                 }
             }
 

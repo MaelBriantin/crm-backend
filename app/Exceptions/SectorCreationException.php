@@ -29,10 +29,11 @@ class SectorCreationException extends Exception
             }
             else {
                 $message = trans('sectors.creation_error');
+//                $message = $e->getMessage();
             }
         } else {
-            $message = $e->getMessage();
-//            $message = trans('sectors.creation_error');
+            $message = trans('sectors.creation_error');
+//            $message = $e->getMessage();
         }
 
         parent::__construct($message, (int) $e->getCode(), $e);

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\SectorCreationException;
 use App\Models\Sector;
 use App\Traits\ApiResponseTrait;
 use App\Services\PostcodeService;
@@ -35,20 +36,18 @@ class SectorController extends Controller
 //                ->get()
 //                ->each
 //                ->append('postcodes_list'));
+
+            // Replaced by raw request to optimize performance
             $sectors = DB::select("
                 SELECT sectors.id,
-                    sectors.name,
-                COUNT(postcodes.id) AS postcodes_count,
-                COUNT(DISTINCT customers.id) AS customers_count,
-                (SELECT GROUP_CONCAT(CONCAT(postcodes.postcode, ' - ', postcodes.city) SEPARATOR ', ')
-                    FROM postcodes
-                WHERE postcodes.sector_id = sectors.id) AS postcodes_list,
-                (SELECT JSON_ARRAYAGG(JSON_OBJECT('id', postcodes.id, 'postcode', postcodes.postcode, 'city', postcodes.city))
-                    FROM postcodes
-                WHERE postcodes.sector_id = sectors.id) AS postcodes
-                    FROM sectors
-                        INNER JOIN postcodes ON sectors.id = postcodes.sector_id
-                        INNER JOIN customers ON sectors.id = customers.sector_id
+                       sectors.name,
+                       COUNT(postcodes.id) AS postcodes_count,
+                       COUNT(DISTINCT customers.id) AS customers_count,
+                       GROUP_CONCAT(CONCAT(postcodes.postcode, ' - ', postcodes.city) SEPARATOR ', ') AS postcodes_list,
+                       JSON_ARRAYAGG(JSON_OBJECT('id', postcodes.id, 'postcode', postcodes.postcode, 'city', postcodes.city)) AS postcodes
+                FROM sectors
+                         LEFT JOIN postcodes ON sectors.id = postcodes.sector_id
+                         LEFT JOIN customers ON sectors.id = customers.sector_id
                 GROUP BY sectors.id, sectors.name");
 
             collect($sectors)->map(function($sector) {
@@ -67,15 +66,18 @@ class SectorController extends Controller
         return $this->index(true);
     }
     /**
-     * @return JsonResponse|JsonResponse<array>
      * @param mixed $sector
-     * @param mixed $withPostcodes
+     * @param bool|mixed $withPostcodes
+     *@return JsonResponse|JsonResponse<array>
      */
-    public function show($sector, $withPostcodes = false): JsonResponse
+    public function show(mixed $sector, bool $withPostcodes = false): JsonResponse
     {
         $result = is_numeric($sector)
-            ? Sector::withCount('postcodes')->find($sector)
-            : Sector::withCount('postcodes')->where('name', '=', $sector)->first();
+            ? Sector::withCount('postcodes')
+                ->find($sector)
+            : Sector::withCount('postcodes')
+                ->where('name', '=', $sector)
+                ->first();
 
         if ($result) {
             if ($withPostcodes) {
@@ -90,12 +92,13 @@ class SectorController extends Controller
      * @return JsonResponse|JsonResponse<array>
      * @param mixed $sector
      */
-    public function showWithPostcodes($sector): JsonResponse
+    public function showWithPostcodes(mixed $sector): JsonResponse
     {
         return $this->show($sector, true);
     }
     /**
      * @return JsonResponse
+     * @throws SectorCreationException
      */
     public function store(Request $request): JsonResponse
     {
@@ -111,8 +114,10 @@ class SectorController extends Controller
 
         return $this->successResponse($sector);
     }
+
     /**
      * @return JsonResponse
+     * @throws SectorCreationException
      */
     public function update(Request $request, Sector $sector): JsonResponse
     {
