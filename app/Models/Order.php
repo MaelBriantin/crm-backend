@@ -19,17 +19,26 @@ class Order extends Model
 
     protected $guarded = [];
 
-    public function casts(): array
-    {
-        return [
-            'is_paid' => 'boolean',
-        ];
-    }
+    protected $appends = [
+        'is_paid',
+    ];
 
+    public function getIsPaidAttribute()
+    {
+        return $this->paid_at !== null;
+    }
 
     public function getOrderDateAttribute(): string
     {
         return Carbon::parse($this->attributes['order_date'])->isoFormat('L');
+    }
+
+    public function getPaidAtAttribute(): ?string
+    {
+        if ($this->attributes['paid_at'] === null) {
+            return null;
+        }
+        return Carbon::parse($this->attributes['paid_at'])->isoFormat('L');
     }
 
     public function getDeferredDateAttribute(): ?string

@@ -56,7 +56,7 @@ class OrderService
                 'payment_method' => $validatedData['payment_method'],
                 'comment' => $validatedData['comment'] ?? null,
                 'deferred_date' => $validatedData['deferred_date'] ?? null,
-                'is_paid' => !isset($validatedData['deferred_date']),
+                'paid_at' => isset($validatedData['deferred_date']) ? null : now(),
                 'vat_total' => $total['vat_total'],
                 'no_vat_total' => $total['no_vat_total'],
             ]);
@@ -77,6 +77,13 @@ class OrderService
             throw new Exception($e->getMessage());
 
         }
+    }
+
+    public function confirmPayment(Order $order): void
+    {
+        $order->update([
+            'paid_at' => now()
+        ]);
     }
 
     private function calculateTotal($products): array

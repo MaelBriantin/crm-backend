@@ -13,7 +13,7 @@ class OrderController extends Controller
 {
     use ApiResponseTrait;
 
-    protected $orderService;
+    protected OrderService $orderService;
 
     public function __construct(OrderService $orderService)
     {
@@ -62,6 +62,16 @@ class OrderController extends Controller
         try {
             $order = $this->orderService->createOrder($request);
             return static::successResponse($order, 201);
+        } catch (Exception $e) {
+            return static::errorResponse($e->getMessage(), 500);
+        }
+    }
+
+    public function confirmPayment(Order $order)
+    {
+        try {
+            $this->orderService->confirmPayment($order);
+            return static::successResponse([], 204);
         } catch (Exception $e) {
             return static::errorResponse($e->getMessage(), 500);
         }

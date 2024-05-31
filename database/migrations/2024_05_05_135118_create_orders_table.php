@@ -31,7 +31,8 @@ return new class extends Migration
             $table->float('no_vat_total');
             $table->date('order_date');
             $table->date('deferred_date')->nullable();
-            $table->boolean('is_paid')->default(true);
+//            $table->boolean('is_paid')->default(true);
+            $table->date('paid_at')->nullable();
             $table->string('customer_full_name');
             $table->string('customer_address');
             $table->string('customer_city');
