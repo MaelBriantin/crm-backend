@@ -34,8 +34,6 @@ class StoreOrderRequest extends FormRequest
             'products.*.product_size_id' => 'nullable|exists:product_sizes,id',
             'deferred_date' => 'nullable|date',
             'comment' => 'nullable|string',
-            'vat_total' => 'required|numeric',
-            'no_vat_total' => 'required|numeric',
         ];
     }
 }

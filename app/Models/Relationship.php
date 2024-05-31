@@ -9,19 +9,9 @@ class Relationship extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'value',
-        'created_at',
-        'updated_at',
-    ];
+    protected $guarded = [];
 
     protected $appends = [
-        'label',
-    ];
-
-    protected $visible = [
-        'id',
-        'value',
         'label',
     ];
 
@@ -34,5 +24,5 @@ class Relationship extends Model
     {
         return $this->hasMany(Customer::class);
     }
-    
+
 }

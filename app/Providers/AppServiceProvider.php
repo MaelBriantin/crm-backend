@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Enums\Product\ProductType;
+use App\Models\Product;
+use App\Models\ProductSize;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +23,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Relation::enforceMorphMap([
+            ProductType::CLOTHES => ProductSize::class,
+            ProductType::DEFAULT => Product::class,
+        ]);
     }
 }

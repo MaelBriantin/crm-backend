@@ -74,6 +74,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/products', [ProductController::class, 'index']);
 
     // Orders routes
+    Route::patch('/orders/{order}/confirmPayment', [OrderController::class, 'confirmPayment']);
     Route::get('/orderOptions', [OrderController::class, 'getOrderOptions']);
+    Route::get('/orders/{order}', [OrderController::class, 'show']);
     Route::post('/orders', [OrderController::class, 'store']);
+    Route::get('/orders', [OrderController::class, 'index']);
 });

@@ -6,10 +6,13 @@ use App\Scopes\UserScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Sector extends Model
 {
     use HasFactory;
+    use SoftDeletes;
+
 
     protected $fillable = [
         'name',
@@ -17,17 +20,12 @@ class Sector extends Model
         'created_at',
         'updated_at',
     ];
-    
+
     protected $hidden = [
         'created_at',
         'updated_at',
         'user_id',
     ];
-
-    // protected $appends = ['postcodes_list'];
-
-    // protected $withCount = ['postcodes'];
-    // protected $with = ['postcodes'];
 
     protected static function booted()
     {
@@ -49,10 +47,15 @@ class Sector extends Model
         return $this->hasMany(Customer::class);
     }
 
+    public function orders()
+    {
+        return $this->hasManyThrough(Order::class, Customer::class);
+    }
+
     public function getPostcodesListAttribute()
     {
         return $this->postcodes->map(function ($postcode) {
-            return "$postcode->postcode - $postcode->city";
+            return $postcode->city_label;
         })->toArray();
     }
 

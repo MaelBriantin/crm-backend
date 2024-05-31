@@ -17,7 +17,7 @@ abstract class PaymentMethod implements LabelTranslationInterface
 
     public static function getTranslationKey(): string
     {
-        return 'orders.means_of_payment';
+        return 'orders.payment_methods';
     }
 
     /**
