@@ -48,6 +48,7 @@ class SectorController extends Controller
                 FROM sectors
                          LEFT JOIN postcodes ON sectors.id = postcodes.sector_id
                          LEFT JOIN customers ON sectors.id = customers.sector_id
+                WHERE sectors.deleted_at IS NULL
                 GROUP BY sectors.id, sectors.name");
 
             collect($sectors)->map(function($sector) {
