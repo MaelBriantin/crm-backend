@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('size');
             $table->unsignedBigInteger('stock')->default(0);
             $table->timestamps();
+
+            $table->softDeletes();
         });
     }
 

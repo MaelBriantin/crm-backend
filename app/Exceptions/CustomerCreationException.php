@@ -17,12 +17,13 @@ class CustomerCreationException extends Exception
                     $message = trans('customers.invalid_sector_id');
                 }
             } else {
-                $message = trans('customers.creation_error');
+                $message = $e->getMessage();
+//                $message = trans('customers.creation_error');
             }
         } else {
             $message = $e->getMessage();
         }
 
-        parent::__construct($message, $e->getCode(), $e);
+        parent::__construct($message, (int) $e->getCode(), $e);
     }
 }

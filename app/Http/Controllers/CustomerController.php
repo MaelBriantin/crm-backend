@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 
 class CustomerController extends Controller
 {
-    
+
     use ApiResponseTrait;
 
     protected $customerService;
@@ -24,20 +24,17 @@ class CustomerController extends Controller
 
     public function index(): \Illuminate\Http\JsonResponse
     {
-        // return $this->successResponse(
-        //     Customer::orderBy('is_active', 'desc')
-        //         ->get()
-        //         ->each
-        //         ->append(['full_name', 'full_address', 'sector_name'])
-        //         ->load('sector')
-        // );
-        return $this->successResponse(CustomerResource::collection(Customer::all()));
+        return $this->successResponse(
+            CustomerResource::collection(
+            Customer::with('sector', 'relationship', 'visitFrequency')
+                    ->get())
+        );
     }
 
     public function show(Customer $customer): \Illuminate\Http\JsonResponse
     {
         return $this->successResponse($customer);
-    }	
+    }
 
     public function store(StoreCustomerRequest $customerRequest)
     {

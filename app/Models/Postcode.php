@@ -4,27 +4,31 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Postcode extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'postcode',
-        'city',
-        'sector_id',
-        'created_at',
-        'updated_at',
-        'user_id',
-    ];
-    
+
+    protected $guarded = [];
+
     protected $hidden = [
         'created_at',
         'updated_at',
         'user_id',
     ];
 
+//    protected $appends = [
+//       'city_label',
+//    ];
+
     public function sector() {
         return $this->belongsTo(Sector::class);
+    }
+
+    public function getCityLabelAttribute()
+    {
+        return "$this->postcode - $this->city";
     }
 }

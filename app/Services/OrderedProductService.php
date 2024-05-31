@@ -23,25 +23,26 @@ class OrderedProductService
             'product_type' => 'required|string|in:' . ProductType::request(),
             'ordered_quantity' => 'required|integer',
             'product_id' => 'required|integer|exists:products,id',
-            'product_size_id' => 'nullable|integer|exists:product_sizes,id'
+            'product_size_id' => 'nullable|integer|exists:product_sizes,id',
         ])->validated();
 
         $product = Product::find($validatedData['product_id']);
         if (!$this->canUpdateProductQuantity($validatedData['ordered_quantity'], $product, ProductSize::find($validatedData['product_size_id'] ?? null))) {
             throw new \Exception(trans('orders.product_quantity_error', ['product_name' => $product->name]));
         }
-
         $newOrderedProduct = new OrderedProduct();
         $newOrderedProduct->order_id = $order_id;
         $newOrderedProduct->product_type = $validatedData['product_type'];
         $newOrderedProduct->product_id = $validatedData['product_id'];
+        $newOrderedProduct->product_size_id =
+            $validatedData['product_type'] === ProductType::CLOTHES
+                ? $validatedData['product_size_id']
+                : null;
         $newOrderedProduct->ordered_quantity = $validatedData['ordered_quantity'];
-
-        if ($validatedData['product_type'] === ProductType::CLOTHES && isset($validatedData['product_size_id'])) {
-            $newOrderedProduct->product_size_id = $validatedData['product_size_id'];
-        } else {
-            $newOrderedProduct->product_size_id = null;
-        }
+        $newOrderedProduct->product_name = $product['name'];
+        $newOrderedProduct->product_reference = $product['reference'];
+        $newOrderedProduct->no_vat_price = $product['selling_price'];
+        $newOrderedProduct->vat_price = $product['selling_price_with_vat'];
 
         if (isset($validatedData['product_size_id'])) {
             self::updateProductQuantity(
