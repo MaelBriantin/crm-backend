@@ -4,15 +4,14 @@ namespace App\Models;
 
 use App\Scopes\UserScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Sector extends Model
 {
     use HasFactory;
     use SoftDeletes;
-
 
     protected $fillable = [
         'name',
@@ -26,11 +25,6 @@ class Sector extends Model
         'updated_at',
         'user_id',
     ];
-
-    protected static function booted()
-    {
-        static::addGlobalScope(new UserScope);
-    }
 
     public function postcodes()
     {
@@ -59,12 +53,24 @@ class Sector extends Model
         })->toArray();
     }
 
-    // protected static function boot()
-    // {
-    //     parent::boot();
+    public function getAverageAmountAttribute()
+    {
+        if ($this->orders->isNotEmpty()) {
+            $totalAmount = $this->orders->sum('vat_total');
+            $orderCount = $this->orders->count();
 
-    //     static::addGlobalScope('order', function (Builder $builder) {
-    //         $builder->orderBy('name', 'asc');
-    //     });
-    // }
+            return $orderCount > 0 ? $totalAmount / $orderCount : null;
+        }
+        return null;
+    }
+
+    public function scopeByUser($query)
+    {
+        return $query->where('orders.user_id', auth()->id());
+    }
+
+    /* protected static function booted() */
+    /* { */
+    /* static::addGlobalScope(new UserScope); */
+    /* } */
 }

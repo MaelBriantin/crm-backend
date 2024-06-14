@@ -3,18 +3,17 @@
 namespace App\Models;
 
 use App\Scopes\UserScope;
-use Cache;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Cache;
 
 class Order extends Model
 {
     use HasFactory;
-
     use SoftDeletes;
 
     protected $guarded = [];
@@ -64,7 +63,7 @@ class Order extends Model
         $today = now()->format('Y-m-d');
         $deferredDate = $this->attributes['deferred_date'];
         if (!$this->is_paid) {
-            if ($this->deferred_date !== null && $deferredDate> $today) {
+            if ($this->deferred_date !== null && $deferredDate > $today) {
                 return 'pending';
             }
             return 'unpaid';
@@ -92,8 +91,17 @@ class Order extends Model
         return $this->belongsTo(Sector::class);
     }
 
-    protected static function booted(): void
+    public function orders()
     {
-        static::addGlobalScope(new UserScope);
+        return $this->hasManyThrough(Order::class, Customer::class);
     }
+
+    public function scopeByUser($query) {
+        return $query->where('orders.user_id', auth()->id());
+    }
+
+    /*protected static function booted(): void*/
+    /*{*/
+    /*    static::addGlobalScope(new UserScope);*/
+    /*}*/
 }
