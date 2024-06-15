@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Scopes\UserScope;
+use App\Traits\FormatNumberTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -12,6 +13,7 @@ class Sector extends Model
 {
     use HasFactory;
     use SoftDeletes;
+    use FormatNumberTrait;
 
     protected $fillable = [
         'name',
@@ -58,8 +60,9 @@ class Sector extends Model
         if ($this->orders->isNotEmpty()) {
             $totalAmount = $this->orders->sum('vat_total');
             $orderCount = $this->orders->count();
-
-            return $orderCount > 0 ? $totalAmount / $orderCount : null;
+            return $orderCount > 0
+                ? $this->format_number($totalAmount / $orderCount)
+                : null;
         }
         return null;
     }
