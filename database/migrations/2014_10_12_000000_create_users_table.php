@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -18,6 +17,7 @@ return new class extends Migration
             $table->string('company_name')->nullable();
             $table->string('siret')->nullable();
             $table->string('siren')->nullable();
+            $table->string('intercom_number')->nullable();
             $table->string('address')->nullable();
             $table->integer('postcode')->nullable();
             $table->string('city')->nullable();
