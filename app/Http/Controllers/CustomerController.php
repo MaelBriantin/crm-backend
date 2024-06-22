@@ -5,14 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Customer\StoreCustomerRequest;
 use App\Http\Requests\Customer\UpdateCustomerRequest;
 use App\Http\Resources\CustomerResource;
-use App\Traits\ApiResponseTrait;
 use App\Models\Customer;
 use App\Services\CustomerService;
-use Illuminate\Http\Request;
+use App\Traits\ApiResponseTrait;
+use Illuminate\Http\JsonResponse;
 
 class CustomerController extends Controller
 {
-
     use ApiResponseTrait;
 
     protected $customerService;
@@ -26,17 +25,21 @@ class CustomerController extends Controller
     {
         return $this->successResponse(
             CustomerResource::collection(
-            Customer::with('sector', 'relationship', 'visitFrequency')
-                    ->get())
+                Customer::with('sector', 'relationship', 'visitFrequency')
+                    ->get()
+            )
         );
     }
 
     public function show(Customer $customer): \Illuminate\Http\JsonResponse
     {
+        $customer
+            ->load('orders', 'orders.orderedProducts', 'sector', 'relationship', 'visitFrequency')
+            ->append('vat_average_order_amount', 'no_vat_average_order_amount');
         return $this->successResponse($customer);
     }
 
-    public function store(StoreCustomerRequest $customerRequest)
+    public function store(StoreCustomerRequest $customerRequest): JsonResponse
     {
         $customer = $this->customerService->createCustomer($customerRequest);
 

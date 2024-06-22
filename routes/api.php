@@ -25,7 +25,7 @@ use Illuminate\Http\Request;
 Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::get('/user', function (Request $request) {
-        return [$request->user()];
+        return [auth()->user()];
     });
     // Sectors routes
     Route::get('/sectorsWithPostcodes/{sector}', [SectorController::class, 'showWithPostcodes']);

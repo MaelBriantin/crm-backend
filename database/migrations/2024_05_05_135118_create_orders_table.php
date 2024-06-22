@@ -22,7 +22,8 @@ return new class extends Migration
                 ->constrained()
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
-            $table->foreignId('sector_id')
+        $table->foreignId('sector_id')
+                ->nullable()
                 ->constrained()
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();

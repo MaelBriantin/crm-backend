@@ -42,12 +42,12 @@ class OrderService
             DB::beginTransaction();
             $total = $this->calculateTotal($validatedData['products']);
             $customer = Customer::find($validatedData['customer_id']);
-            $sector = Sector::find($customer->sector_id);
+            $sector = Sector::find($customer->sector_id) ?? null;
 
             $newOrder = Order::create([
                 'order_number' => $this->generateOrderNumber(),
                 'user_id' => auth()->user()->id,
-                'sector_id' => $sector->id,
+                'sector_id' => $sector->id ?? null,
                 'customer_id' => $validatedData['customer_id'],
                 'customer_full_name' => $customer->firstname . ' ' . $customer->lastname,
                 'customer_address' => $customer->address,
