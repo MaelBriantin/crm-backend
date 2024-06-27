@@ -8,19 +8,14 @@ use App\Models\Order;
 use App\Models\Product;
 use App\Models\Sector;
 use Carbon\Carbon;
+use App\Traits\FormatNumberTrait;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 use Exception;
-use Illuminate\Database\QueryException;
 
 class OrderService
 {
-    protected OrderedProductService $orderedProductService;
-
-    public function __construct(OrderedProductService $orderedProductService)
-    {
-        $this->orderedProductService = $orderedProductService;
-    }
-
+    use FormatNumberTrait;
     /**
      * @throws Exception
      */
@@ -29,10 +24,6 @@ class OrderService
         $validatedData = $request->validated();
 
         if (isset($validatedData['deferred_date'])) {
-//            $deferredDate = Carbon::createFromFormat('Y-m-d', $validatedData['deferred_date']);
-//            if ($deferredDate->isPast() || $deferredDate->isToday()) {
-//                throw new Exception(trans('orders.deferred_date_invalid'));
-//            }
             if (!$this->checkDeferredDateStatus($validatedData['deferred_date'])) {
                 throw new Exception(trans('orders.deferred_date_invalid'));
             }
@@ -61,21 +52,19 @@ class OrderService
                 'no_vat_total' => $total['no_vat_total'],
             ]);
 
-            foreach ($validatedData['products'] as $product) {
-                $this->orderedProductService->createOrderedProduct($product, $newOrder->id);
-            }
+            $orderedProductService = new OrderedProductService;
 
+            foreach ($validatedData['products'] as $product) {
+                $orderedProductService->createOrderedProduct($product, $newOrder->id);
+            }
 
             DB::commit();
 
             return Order::where('id', $newOrder->id)->with('orderedProducts')->first();
-
         } catch (QueryException $e) {
-
             DB::rollBack();
             // throw new Exception(trans('orders.order_creation_error'));
             throw new Exception($e->getMessage());
-
         }
     }
 
@@ -86,14 +75,13 @@ class OrderService
         ]);
     }
 
-    private function calculateTotal($products): array
+    public function calculateTotal($products): array
     {
         $productIds = array_column($products, 'product_id');
         $foundProducts = Product::whereIn('id', $productIds)->get()->keyBy('id');
 
         $total_vat = 0;
         $total_no_vat = 0;
-
         foreach ($products as $product) {
             $product = (object) $product;
             $foundProduct = $foundProducts[$product->product_id];
@@ -101,8 +89,8 @@ class OrderService
             $total_no_vat += $foundProduct->selling_price * $product->ordered_quantity;
         }
         return [
-            'vat_total' => $total_vat,
-            'no_vat_total' => $total_no_vat,
+            'vat_total' => $this->format_number($total_vat),
+            'no_vat_total' => $this->format_number($total_no_vat),
         ];
     }
 
