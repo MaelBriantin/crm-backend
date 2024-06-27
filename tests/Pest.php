@@ -1,7 +1,10 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use function Pest\Laravel\actingAs;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -14,7 +17,16 @@ use Tests\TestCase;
 |
 */
 
-uses(TestCase::class, RefreshDatabase::class)->in('Feature');
+uses(TestCase::class, RefreshDatabase::class)->in('Feature', 'Unit');
+
+/*uses(TestCase::class, RefreshDatabase::class)*/
+/*    ->beforeEach(function () {*/
+/*        $user = User::factory()->create();*/
+/*        actingAs($user);*/
+/*        $this->user = $user;*/
+/*    })*/
+/*    ->group('needAuthentication')*/
+/*    ->in('Feature');*/
 
 /*
 |--------------------------------------------------------------------------
