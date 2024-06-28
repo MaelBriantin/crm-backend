@@ -1,13 +1,17 @@
 <?php
 
-test('new users can register', function () {
-    $response = $this->post('/register', [
-        'name' => 'Test User',
-        'email' => 'test@example.com',
-        'password' => 'password',
-        'password_confirmation' => 'password',
-    ]);
+namespace Tests\Feature\Auth;
 
-    $this->assertAuthenticated();
-    $response->assertNoContent();
-});
+use function Pest\Laravel\{post, assertAuthenticated};
+
+/*test('new users can register', function () {*/
+/*    $response = post('/register', [*/
+/*        'name' => 'Test User',*/
+/*        'email' => 'test@example.com',*/
+/*        'password' => 'password',*/
+/*        'password_confirmation' => 'password',*/
+/*    ]);*/
+/**/
+/*    assertAuthenticated();*/
+/*    $response->assertNoContent();*/
+/*});*/

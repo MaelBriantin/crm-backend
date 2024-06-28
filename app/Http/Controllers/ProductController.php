@@ -53,7 +53,7 @@ class ProductController extends Controller
     {
         $product = $this->productService->createProduct($storeProductRequest);
 
-        return $this->successResponse($product);
+        return $this->successResponse($product, 201);
     }
 
     public function update(UpdateProductRequest $updateProductRequest, Product $product)

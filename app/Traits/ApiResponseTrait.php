@@ -14,8 +14,9 @@ trait ApiResponseTrait
      *
      * @param object|array|int|null $data The data to be included in the response.
      * @return JsonResponse The JSON response.
+     * @param mixed $code
      */
-    private function successResponse(object | array | int $data = null): JsonResponse
+    private function successResponse(object | array | int $data = null, $code = 201): JsonResponse
     {
         if ($data instanceof Collection) {
             $data = $data->toArray();
@@ -24,20 +25,20 @@ trait ApiResponseTrait
         if ($data instanceof \Illuminate\Http\Resources\Json\ResourceCollection) {
             $data = $data->resolve();
         }
-    
+
         if (is_array($data)) {
-            return response()->json($data, 200, [], JSON_PRESERVE_ZERO_FRACTION);
+            return response()->json($data, $code, [], JSON_PRESERVE_ZERO_FRACTION);
         }
-    
-        return response()->json([$data], 200, [], JSON_PRESERVE_ZERO_FRACTION);
+
+        return response()->json([$data], $code, [], JSON_PRESERVE_ZERO_FRACTION);
     }
 
     /**
      * @param string $message
      * @param int $status
-     * 
+     *
      * @return JsonResponse<array>
-     * 
+     *
      * @throws InvalidArgumentException
      * @throws Exception If $status is within the range 200-299.
      *

@@ -25,9 +25,8 @@ class ProductService
         try {
             $data = $productRequest->validated();
             $data['user_id'] = auth()->user()->id;
-
             $newProduct = Product::create($data);
-            
+
             if ($newProduct['product_type'] === ProductType::CLOTHES) {
                 $this->productSizeService->createProductSize($newProduct, $productRequest);
             }

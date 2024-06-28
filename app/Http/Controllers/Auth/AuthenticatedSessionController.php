@@ -22,7 +22,7 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return $this->successResponse(\auth()->user());
+        return $this->successResponse(\auth()->user(), 201);
     }
 
     /**
