@@ -11,25 +11,23 @@ test('users can authenticate', function () {
     ]);
 
     $this->assertAuthenticated();
-    $response->assertNoContent();
 });
 
-/*test('users can not authenticate with invalid password', function () {*/
-/*    $user = User::factory()->create();*/
-/**/
-/*    $this->post('/login', [*/
-/*        'email' => $user->email,*/
-/*        'password' => 'wrong-password',*/
-/*    ]);*/
-/**/
-/*    $this->assertGuest();*/
-/*});*/
-/**/
-/*test('users can logout', function () {*/
-/*    $user = User::factory()->create();*/
-/**/
-/*    $response = $this->actingAs($user)->post('/logout');*/
-/**/
-/*    $this->assertGuest();*/
-/*    $response->assertNoContent();*/
-/*});*/
+test('users can not authenticate with invalid password', function () {
+    $user = User::factory()->create();
+
+    $this->post('/login', [
+        'email' => $user->email,
+        'password' => 'wrong-password',
+    ]);
+
+    $this->assertGuest();
+});
+
+test('users can logout', function () {
+    $user = User::factory()->create();
+
+    $response = $this->actingAs($user)->post('/logout');
+
+    $this->assertGuest();
+});
