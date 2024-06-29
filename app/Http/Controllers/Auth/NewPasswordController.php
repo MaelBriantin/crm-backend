@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
-use Illuminate\Validation\Rules;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 class NewPasswordController extends Controller
@@ -21,10 +21,28 @@ class NewPasswordController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
+        /* $request->validate([ */
+        /* 'token' => ['required'], */
+        /* 'email' => ['required', 'email'], */
+        /* 'password' => ['required', 'confirmed', Rules\Password::defaults()], */
+        /* ]); */
         $request->validate([
             'token' => ['required'],
             'email' => ['required', 'email'],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'password' => [
+                'required',
+                'confirmed',
+                Rule::requiredIf(function () use ($request) {
+                    return $request->password !== null;
+                }),
+                'string',
+                'min:12',
+                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%&*]).+$/',
+            ],
+        ], [
+            /*'password.min' => trans('validation.custom.password.min'),*/
+            /*'password.regex' => trans('validation.custom.password.regex'),*/
+            'password' => trans('validation.password'),
         ]);
 
         // Here we will attempt to reset the user's password. If it is successful we
